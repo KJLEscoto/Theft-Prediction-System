@@ -1,0 +1,33 @@
+Nuxt Folder - npx nuxi@latest init view
+
+UI Library (NUXT UI) - npx nuxi@latest module add ui
+
+Icons - npm i @iconify-json/lucide
+
+NPM - npm install
+
+
+--- bugs:
+/ audio effects
+/ reload pages
+
+--- to do:
+/ api
+/ integrations
+/ phone +63 splice
+/ all nuxt tables
+/ unhashed password (for retrieval)
+/ update client
+/ add, remove, select bulk sms
+
+--- updates done:
+/ responsive
+/ dark mode
+/ lang ts - auth, admin, sms, email
+/ show/hide password
+
+- client side
+/ input fields fix error
+/ static avatars (variants)
+/ monitor - static camera selection
+/ settings - edit, static bulk sms 3:max (add, select, remove)
