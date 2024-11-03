@@ -23,8 +23,9 @@ class DatabaseSeeder extends Seeder
                 'phone_number' => '+639507541450',
                 'status' => 'active',
                 'role' => 'superadmin',
+                'avatar' => '53',
                 'username' => 'kentoy',
-                'password' => Hash::make('password'), 
+                'password' => 'password', 
                 'email' => 'kentescoto24@gmail.com',
             ],
             [
@@ -35,8 +36,9 @@ class DatabaseSeeder extends Seeder
                 'phone_number' => '+639507541450',
                 'status' => 'active',
                 'role' => 'admin',
+                'avatar' => '3',
                 'username' => 'luis',
-                'password' => Hash::make('password'), 
+                'password' => 'password', 
                 'email' => 'lsuizo72@gmail.com',
             ],
             [
@@ -48,7 +50,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 'active',
                 'role' => 'client',
                 'username' => 'rochyyy',
-                'password' => Hash::make('password'), 
+                'password' => 'password', 
                 'email' => 'rochyyy@gmail.com',
             ],
         ];

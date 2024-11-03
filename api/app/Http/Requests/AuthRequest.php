@@ -32,6 +32,7 @@ class AuthRequest extends FormRequest
             'role' => 'required|in:admin,client,superadmin',
             'status' => 'required|in:active,inactive',
             'gender' => 'required|in:male,female,other',
+            'avatar' => 'nullable|string',
         ];
     }
 }
