@@ -77,20 +77,38 @@
               <p>Preview:</p>
               <div class="flex justify-start gap-3 items-end">
                 <img
+                  v-if="previewAvatar || user.avatar"
                   draggable="false"
                   class="w-40 h-40 border-4 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[150px] w-40 h-40 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ initial }}</span
+                >
                 <img
+                  v-if="previewAvatar || user.avatar"
                   draggable="false"
                   class="w-24 h-24 border-4 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[50px] w-24 h-24 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ initial }}</span
+                >
                 <img
+                  v-if="previewAvatar || user.avatar"
                   draggable="false"
                   class="w-14 h-14 border-2 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[20px] w-14 h-14 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ initial }}</span
+                >
               </div>
             </div>
 
@@ -525,7 +543,12 @@ definePageMeta({
 });
 
 import type { FormError, FormErrorEvent, FormSubmitEvent } from "#ui/types";
-import { user, previewAvatar, setPreviewAvatar } from "~/assets/js/userLogged";
+import {
+  user,
+  previewAvatar,
+  initial,
+  setPreviewAvatar,
+} from "~/assets/js/userLogged";
 import { name, playSound } from "~/assets/js/sound";
 import { avatars } from "~/assets/js/avatar";
 import { isPasswordVisible, togglePassword } from "~/assets/js/showPassword";

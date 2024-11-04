@@ -139,7 +139,7 @@
                 <section class="flex items-center gap-2">
                   <UIcon name="i-heroicons-phone-16-solid" class="h-auto w-5" />
                   <p class="capitalize text-base dark:text-custom-300">
-                    {{ userDetails.phone_number }}
+                    +63{{ userDetails.phone_number }}
                   </p>
                 </section>
 

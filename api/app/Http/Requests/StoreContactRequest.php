@@ -22,7 +22,7 @@ class StoreContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'contact_number' => 'required|string|max:15',
+            'contact_number' => 'required|string|size:10|regex:/^[0-9]{10}$/',
             'is_enabled' => 'boolean',
         ];
     }

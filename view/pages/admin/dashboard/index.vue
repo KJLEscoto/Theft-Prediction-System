@@ -268,7 +268,7 @@ onMounted(() => {
 const loadUsers = async () => {
   const fetchedUsers = await fetchUsers();
 
-  let activeCount = 0;
+  let activeCount = 1;
   let inactiveCount = 0;
   let adminCount = 0; // Counter for admins
   let clientCount = 0; // Counter for clients

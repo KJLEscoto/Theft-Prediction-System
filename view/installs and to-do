@@ -6,7 +6,6 @@ Icons - npm i @iconify-json/lucide
 
 NPM - npm install
 
-
 --- bugs:
 / audio effects
 / reload pages
@@ -27,7 +26,28 @@ NPM - npm install
 / show/hide password
 
 - client side
-/ input fields fix error
-/ static avatars (variants)
-/ monitor - static camera selection
-/ settings - edit, static bulk sms 3:max (add, select, remove)
+  / input fields fix error
+  / static avatars (variants)
+  / monitor - static camera selection
+  / settings - edit, static bulk sms 3:max (add, select, remove)
+
+BUHATA NI BAJA:
+
+1. Dapat wala ang admin or superadmin nga naka login sa active users.✅
+2. Detect count mali ang fetch.✅
+3. edit user avatar✅
+4. notifications fetch✅
+5. contact number (no letters)✅
+6. motions delete delay✅
+7. avatars need fix✅
+8. screenshot dashboard admin
+
+BUHATA NI KENT:
+
+1. ang view sa detected, dili ma open
+2. naay error message pag letters iyang gi type sa contacts, then mu error if dili philippine na no. iyang gi typed,
+   problem is walay color ang error message
+
+Update:
+
+- makita gihapon sa detect page maskin na delete na ang user or ang motion.

@@ -1,20 +1,24 @@
 <template>
   <section class="grid gap-5 items-center">
     <!-- Search Input and Pagination -->
-    <div class="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:gap-0 gap-5 lg:items-end">
+    <div
+      class="flex flex-col-reverse sm:flex-row sm:justify-between justify-center sm:gap-0 gap-5 lg:items-end"
+    >
       <!-- Search Input -->
       <div class="flex items-center gap-1">
-        <UInput 
-          v-model="q" 
-          placeholder="Search..." 
+        <UInput
+          v-model="q"
+          placeholder="Search..."
           icon="i-heroicons-magnifying-glass-20-solid"
-          autocomplete="off" 
-          color="gray" 
+          autocomplete="off"
+          color="gray"
           size="sm"
           :ui="{
             rounded: 'rounded',
-            color: { gray: { outline: 'dark:bg-custom-100 dark:text-custom-900' } },
-            icon: { trailing: { pointer: '' } }
+            color: {
+              gray: { outline: 'dark:bg-custom-100 dark:text-custom-900' },
+            },
+            icon: { trailing: { pointer: '' } },
           }"
           class="w-full sm:w-auto sm:-mb-0 -mb-5"
         >
@@ -56,7 +60,7 @@
             color: 'gray',
             wrapper: 'flex items-center gap-1',
             rounded: '!rounded-full min-w-[30px] justify-center',
-            default: { activeButton: { variant: 'outline' } }
+            default: { activeButton: { variant: 'outline' } },
           }"
         />
       </div>
@@ -71,7 +75,7 @@
       class="max-h-[70vh] max-w-full overflow-auto border rounded border-custom-300 dark:border-custom-800"
       :ui="{
         thead: 'sticky top-0 z-10 dark:bg-custom-700 bg-custom-300',
-        tbody: 'bg-custom-100 dark:bg-custom-950'
+        tbody: 'bg-custom-100 dark:bg-custom-950',
       }"
     >
       <!-- Loading State -->
@@ -87,12 +91,21 @@
         <span>{{ (currentPage - 1) * pageCount + index + 1 }}</span>
       </template>
 
+      <!-- <template #date_captured-data="{ index }">
+        <div></div>
+      </template> -->
+
       <!-- Action Buttons for Each Row -->
       <template #action-data="{ row }">
         <UTooltip
           text="View"
           :popper="{ arrow: true, placement: 'right' }"
-          :ui="{ background: 'dark:bg-custom-800 bg-custom-50', arrow: { background: 'dark:before:bg-custom-700 before:bg-custom-300' } }"
+          :ui="{
+            background: 'dark:bg-custom-800 bg-custom-50',
+            arrow: {
+              background: 'dark:before:bg-custom-700 before:bg-custom-300',
+            },
+          }"
         >
           <UIcon
             name="i-lucide-eye"
@@ -119,24 +132,23 @@
 </template>
 
 <script setup lang="ts">
-import { ModalViewNotifications } from '#components';
-import { notifications, fetchNotifications } from '~/assets/js/notifications';
-import { user, fetchUser } from '~/assets/js/userLogged'; // Adjust the path as needed
+import { ModalViewNotifications } from "#components";
+import { formatDate } from "~/assets/js/formatDate";
+import { notifications, fetchNotifications } from "~/assets/js/notifications";
+import { user, fetchUser } from "~/assets/js/userLogged"; // Adjust the path as needed
 
-
-
-const { username } = useRoute().params
+const { username } = useRoute().params;
 
 const currentPage = ref(1);
 const pageCount = ref(20);
-const q = ref('');
+const q = ref("");
 
 // Table headers
 const tableHeaders = [
-  { key: 'id', label: '#' },
-  { key: 'date_captured', label: 'Date' },
-  { key: 'motion_detected', label: 'Motion Detected' },
-  { key: 'action', label: 'Action' },
+  { key: "id", label: "#" },
+  { key: "date_captured", label: "Date" },
+  { key: "motion_detected", label: "Motion Detected" },
+  { key: "action", label: "Action" },
 ];
 
 // Filter rows based on the search query
@@ -162,7 +174,9 @@ const updatePage = (page: number) => {
 };
 
 const startItem = computed(() => (currentPage.value - 1) * pageCount.value + 1);
-const endItem = computed(() => Math.min(currentPage.value * pageCount.value, totalNotifications.value));
+const endItem = computed(() =>
+  Math.min(currentPage.value * pageCount.value, totalNotifications.value)
+);
 
 // Open modal and pass selected notification data
 const openModal = (notification: any) => {
@@ -176,7 +190,8 @@ watch(q, () => {
 });
 
 onMounted(() => {
-  loadNotifications()
+  loadNotifications();
+  paginatedData;
 });
 const loadNotifications = async () => {
   await fetchUser();
@@ -185,10 +200,7 @@ const loadNotifications = async () => {
   } else {
     await fetchNotifications(user.username);
   }
-  
-  console.log('settings', notifications)
+
+  console.log("settings", notifications);
 };
-
-
-
 </script>

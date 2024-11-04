@@ -53,5 +53,5 @@ Route::middleware('auth:sanctum')->post('/user/contact', [ContactController::cla
 Route::middleware('auth:sanctum')->delete('/user/contact/{contact_id}', [ContactController::class, 'destroy']);
 Route::middleware('auth:sanctum')->put('/user/contact/{contact_id}', [ContactController::class, 'toggleEnable']);
 
-Route::get('/active', [AuthController::class, 'getActive']);
+Route::middleware('auth:sanctum')->get('/active', [AuthController::class, 'getActive']);
 Route::get('/inactive', [AuthController::class, 'getInactive']);

@@ -235,7 +235,10 @@ class AuthController extends Controller
 
     public function getActive()
     {
-        $activeUsers = User::where('status', 'active')->get();
+        $activeUsers = User::where('status', 'active')
+            ->where('id', '!=', Auth::id()) // Use Auth::id() here
+            ->get();
+
         return response()->json($activeUsers);
     }
 

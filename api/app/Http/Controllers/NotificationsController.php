@@ -16,9 +16,14 @@ class NotificationsController extends Controller
      */
     public function index()
     {
-        // Return all notifications with their related motion and user
-        return Notifications::with(['motion', 'user'])->get();
+        // Return all notifications with their related motion and user, including soft-deleted ones
+        return Notifications::withTrashed()->with(['motion' => function ($query) {
+            $query->withTrashed();
+        }, 'user' => function ($query) {
+            $query->withTrashed();
+        }])->get();
     }
+
 
 
 
@@ -86,9 +91,16 @@ class NotificationsController extends Controller
         $userId = $user->id;
 
         // Fetch the notifications for the user by their ID
-        $notifications = Notifications::with(['motion', 'user'])
-            ->where('user_id', $userId)
-            ->get();
+        $notifications = Notifications::with([
+            'motion' => function ($query) {
+                $query->withTrashed(); // Include soft-deleted motions
+            },
+            'user' => function ($query) {
+                $query->withTrashed(); // Include soft-deleted users
+            }
+        ])
+        ->where('user_id', $userId)
+        ->get();
 
         // Return the notifications as a JSON response
         return response()->json($notifications);
