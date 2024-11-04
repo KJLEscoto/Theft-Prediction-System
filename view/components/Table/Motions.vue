@@ -174,9 +174,9 @@ const deleteAction = async (motion) => {
       );
 
       if (response) {
-        // console.log(response);
+        selectedMotion.value = await loadMotions();
+
         playSound();
-        navigateTo("/admin/motions");
 
         toast.add({
           title: "Deleted Successfully!",
@@ -190,6 +190,8 @@ const deleteAction = async (motion) => {
             icon: "text-custom-900",
           },
         });
+      
+        navigateTo("/admin/motions");
       }
     } catch (error) {
       console.log(error.response);
@@ -214,11 +216,13 @@ const endItem = computed(() =>
 // Watch Search Query
 watch(q, () => (currentPage.value = 1));
 
-onMounted(() => {
-  loadMotions();
+onMounted(async () => {
+  const fetchMotions = await loadMotions();
+  selectedMotion.value = fetchMotions || '';  
 });
+
 const loadMotions = async () => {
   await fetchMotions();
-  // console.log('motions', motions)
+  return fetchMotions;
 };
 </script>

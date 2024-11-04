@@ -134,14 +134,10 @@ const paginatedData = computed(() => {
   return filteredRows.value.slice(start, start + pageCount.value);
 });
 
-// Data and reactive state
-const selectedNotification = ref(null); // To store the selected motion
-
 // Open Modal and pass selected motion
 const viewAction = (notification) => {
-  selectedNotification.value = notification; // Set the selected motion
   const modal = useModal();
-  modal.open(ModalViewNotifications, { selectedNotification: notification }); // Pass motion as prop
+  modal.open(ModalViewNotifications, { notification }); // Pass motion as prop
 };
 
 // Update Page on Pagination
@@ -155,7 +151,6 @@ const endItem = computed(() => Math.min(currentPage.value * pageCount.value, tot
 watch(q, () => currentPage.value = 1);
 
 onMounted(() => {
-  
   loadNotifications()
 });
 const loadNotifications = async () => {

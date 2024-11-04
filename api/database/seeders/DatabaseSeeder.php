@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
             User::create($user);
         }
         
-        User::factory(10)->create();
+        // User::factory(10)->create();
 
         $this->call(MotionsSeeder::class);
     }

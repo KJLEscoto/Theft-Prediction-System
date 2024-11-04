@@ -132,15 +132,11 @@
               <section class="flex gap-2 justify-between items-center">
                 <div class="flex gap-2">
                   <h1 class="font-medium">Password:</h1>
-                  <!-- dli ma display ang password kay naka hashed (for safety) pero kung dli i-hashed kay ma retrieve-->
                   <p class="text-base dark:text-custom-300">
                     {{ passwordDisplay }}
                   </p>
                   <!-- <p class="text-base dark:text-custom-300">********</p>  -->
                 </div>
-                <!-- <button @click="togglePasswordVisibility" class="text-blue-500 underline">
-                  {{ isPasswordVisible ? 'Hide' : 'Show' }}
-                </button> -->
                 <UTooltip
                   :text="isPasswordVisible ? 'Hide Password' : 'Show Password'"
                   :popper="{ arrow: true }"
@@ -190,9 +186,18 @@
 
       <div
         v-if="user.role === 'client'"
-        class="flex flex-col h-auto w-full gap-5 lg:p-10 p-5 rounded dark:bg-custom-900 bg-custom-100 border border-custom-300 dark:border-custom-700"
+        class="flex flex-col h-auto max-w-full gap-5 lg:p-10 p-5 rounded dark:bg-custom-900 bg-custom-100 border border-custom-300 dark:border-custom-700"
       >
         <h1 class="font-semibold text-lg">Phone Associated</h1>
+
+        <!-- display other errors here -->
+        <div v-if="state.errors.length">
+          <ul>
+            <li v-for="(error, index) in state.errors" :key="index" class="text-red-500 dark:text-red-400 text-normal font-bold text-center truncate -mt-3">
+              {{ error }}
+            </li>
+          </ul>
+        </div>
 
         <hr class="dark:border-custom-700 border-custom-200" />
 
@@ -204,6 +209,7 @@
             @error="onError"
             class="space-y-2 w-full flex flex-col gap-5"
           >
+          
             <UFormGroup class="grid gap-2" name="phone" :ui="{ error: 'mt-1' }">
               <template #label>
                 <div class="flex items-center justify-start gap-1">
@@ -214,7 +220,6 @@
                       >(max: 3 only)</span
                     >
                   </p>
-                  {{ state.errors }}
                 </div>
               </template>
 
@@ -376,16 +381,16 @@ interface Phone {
 
 // Reactive phones array
 const phones = ref<Phone[]>([
-  {
-    contact_id: 1,
-    number: "+6301938473625",
-    selected: true,
-  },
-  {
-    contact_id: 2,
-    number: "+631845884734",
-    selected: false,
-  },
+  // {
+  //   contact_id: 1,
+  //   number: "+6301938473625",
+  //   selected: true,
+  // },
+  // {
+  //   contact_id: 2,
+  //   number: "+631845884734",
+  //   selected: false,
+  // },
 ]);
 
 // Function to fetch contacts and update the phones array
@@ -554,11 +559,8 @@ async function onSubmit(event: FormSubmitEvent<any>) {
         navigateTo("/client/settings");
       }, 800);
     }
-  } catch (error) {
-    state.errors = error.response?.data?.errors || [
-      { message: "An unexpected error occurred. Please try again." },
-    ];
-    console.error("Error occurred while adding contact:", error);
+  } catch (error: any) {
+    state.errors.push("Invalid Phone. Please try again.");
 
     save.label.value = "Save";
     save.bool.value = false;
