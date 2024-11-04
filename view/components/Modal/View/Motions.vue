@@ -41,8 +41,8 @@
           <div v-else class="w-auto h-[300px] font-bold text-sm flex justify-center items-center text-red-700">No video available.</div>
         </div>
 
-        <div class="text-xs text-custom-400 font-normal flex gap-1 justify-center mt-2">
-          {{ formatDate(selectedMotion.date_added) || '--' }}
+        <div class="text-xs text-custom-400 font-semibold flex gap-1 justify-center mt-2">
+          Date Added: <span class="font-bold">{{ formatDate(selectedMotion.date_added) || '--' }}</span>
         </div>
       </section>
     </div>

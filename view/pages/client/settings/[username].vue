@@ -74,8 +74,11 @@
 
           <section class="flex justify-center w-full gap-5 px-5 flex-wrap">
             <div class="m-auto grid gap-2">
-              <p>Preview:</p>
-              <div class="flex justify-start gap-3 items-end">
+              <div class="flex justify-between">
+                <p>Preview:</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+              </div>
+              <div class="flex justify-start gap-3 items-end cursor-default">
                 <img
                   v-if="previewAvatar || user.avatar"
                   draggable="false"
@@ -607,6 +610,11 @@ const load = {
   label: ref("Update"),
   icon: ref(""),
 };
+
+function resetAvatar() {
+  state.user.avatar = null;
+  setPreviewAvatar(state.user.avatar);
+}
 
 async function onSubmit(event: FormSubmitEvent<any>) {
   const url = previewAvatar._rawValue;

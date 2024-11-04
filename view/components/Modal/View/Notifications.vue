@@ -13,7 +13,7 @@
           Motion Detected
           <span
             v-if="
-              notification.role == 'admin' || notification.role == 'superadmin'
+              user.role == 'superadmin' || user.role == 'admin'
             "
             class="text-blue-600 dark:text-blue-500 truncate"
           >
@@ -27,6 +27,15 @@
           size="2xs"
         />
       </section>
+
+      
+      <h1 v-if="user.role == 'superadmin' || user.role == 'admin'" class="text-sm opacity-60">
+        Detected by:
+        <span
+          class="font-bold capitalize dark:text-custom-300 text-custom-800"
+          >full name sa user</span
+        >
+      </h1>
 
       <hr class="border-custom-300 dark:border-custom-700" />
 
@@ -64,14 +73,13 @@
         >
           <img
             v-if="notification.screenshot"
-            class="w-auto h-[300px] object-cover"
+            class="w-auto h-[250px] object-cover"
             :src="notification.screenshot"
-            :alt="notification.screenshot"
           />
 
           <div
             v-else
-            class="w-auto h-[300px] font-bold text-sm flex justify-center items-center text-red-700"
+            class="w-auto h-[250px] font-bold text-sm flex justify-center items-center text-red-700"
           >
             No screenshot available.
           </div>
@@ -92,6 +100,7 @@
 
 <script setup>
 import { formatDate } from "~/assets/js/formatDate";
+import { user } from "~/assets/js/userLogged";
 
 // Receive notification data as a prop
 const props = defineProps({

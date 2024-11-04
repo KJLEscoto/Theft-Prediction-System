@@ -91,10 +91,6 @@
         <span>{{ (currentPage - 1) * pageCount + index + 1 }}</span>
       </template>
 
-      <!-- <template #date_captured-data="{ index }">
-        <div></div>
-      </template> -->
-
       <!-- Action Buttons for Each Row -->
       <template #action-data="{ row }">
         <UTooltip
@@ -133,7 +129,7 @@
 
 <script setup lang="ts">
 import { ModalViewNotifications } from "#components";
-import { formatDate } from "~/assets/js/formatDate";
+// import { formatDate } from "~/assets/js/formatDate";
 import { notifications, fetchNotifications } from "~/assets/js/notifications";
 import { user, fetchUser } from "~/assets/js/userLogged"; // Adjust the path as needed
 

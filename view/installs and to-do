@@ -18,6 +18,7 @@ NPM - npm install
 / unhashed password (for retrieval)
 / update client
 / add, remove, select bulk sms
+/ loading states
 
 --- updates done:
 / responsive
@@ -38,16 +39,23 @@ BUHATA NI BAJA:
 3. edit user avatar✅
 4. notifications fetch✅
 5. contact number (no letters)✅
-6. motions delete delay✅
-7. avatars need fix✅
-8. screenshot dashboard admin
+6. motions delete delay ✅
+7. avatars need fix ❌
+8. screenshot dashboard admin 
+9. i max nalang nato ang avatar (500), pag 501 ang itype or iincrement kay mag error (max 500 only) kay pag maabot ug 1k++ kay mag lag hahaaha yawa stress test ra kaayo.
+10. pag irefresh ang page sa list of avatars kay ma 120 balik.
+11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error.
+12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32).
 
 BUHATA NI KENT:
 
-1. ang view sa detected, dili ma open
+1. ang view sa detected, dili ma open ✅
 2. naay error message pag letters iyang gi type sa contacts, then mu error if dili philippine na no. iyang gi typed,
-   problem is walay color ang error message
+   problem is walay color ang error message ✅
 
-Update:
+ADDED baja:
+- makita gihapon sa detect page maskin na delete na ang user or ang motion. ✅
 
-- makita gihapon sa detect page maskin na delete na ang user or ang motion.
+ADDED kent:
+- can now reset avatar ✅
+- active and inactive users > 0 catch ✅

@@ -49,9 +49,9 @@
             />
           </div>
           <div
-            class="flex flex-col overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
+            class="flex flex-col h-full overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
           >
-            <div class="flex">
+            <div v-if="activeUsers.length > 0"  class="flex">
               <div
                 v-for="user in activeUsers"
                 :key="user.id"
@@ -82,6 +82,9 @@
                 />
               </div>
             </div>
+            <div v-else class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold">
+              Only your account is active
+            </div>
           </div>
         </div>
         <div class="overflow-auto flex flex-col gap-5">
@@ -92,9 +95,9 @@
             />
           </div>
           <div
-            class="flex flex-col overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
+            class="flex flex-col h-full overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
           >
-            <div class="flex">
+            <div v-if="inactiveUsers.length > 0" class="flex">
               <div
                 v-for="user in inactiveUsers"
                 :key="user.id"
@@ -123,6 +126,9 @@
                   :value="user.role"
                 />
               </div>
+            </div>
+            <div v-else class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold">
+              No users found
             </div>
           </div>
         </div>

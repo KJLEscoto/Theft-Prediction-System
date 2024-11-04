@@ -73,7 +73,10 @@
 
           <section class="flex justify-center w-full gap-5 px-5 flex-wrap">
             <div class="m-auto grid gap-2">
-              <p>Preview:</p>
+              <div class="flex justify-between">
+                <p>Preview:</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+              </div>
               <div class="flex justify-start gap-3 items-end">
                 <img
                   class="w-40 h-40 border-4 border-custom-400 dark:border-custom-300"
@@ -91,14 +94,13 @@
             </div>
 
             <div
-              class="grid grid-cols-5 gap-2 p-3 bg-white dark:bg-custom-800 rounded m-auto max-h-[300px] overflow-y-scroll"
+              class="grid grid-cols-5 gap-2 p-3 bg-white dark:bg-custom-800 rounded m-auto max-h-[250px] overflow-y-scroll"
             >
               <section v-for="avatar in avatars">
                 <img
                   :class="[
                     'w-14 h-14 cursor-pointer',
-                    previewAvatar === avatar ||
-                    (!previewAvatar && user.avatar === avatar)
+                    previewAvatar === avatar
                       ? 'border-4'
                       : 'border',
                     'border-red-600 dark:border-red-800',
@@ -660,6 +662,7 @@ const state = reactive({
     role: "",
     username: "",
     password: "",
+    avatar: ""
   },
 });
 
@@ -774,6 +777,10 @@ async function onSubmit(event: FormSubmitEvent<any>) {
     }
     console.log("An error occurred:", state.errors);
   }
+}
+
+function resetAvatar() {
+  setPreviewAvatar(null);
 }
 
 const links = [
