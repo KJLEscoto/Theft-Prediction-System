@@ -487,7 +487,7 @@ const state = reactive({
 const validate = (state: any): FormError[] => {
   const errors = [];
   if (!state.user.contact_number)
-    errors.push({ path: "phone", message: "Required" });
+    errors.push({ path: "phone", message: "Add phone number before saving." });
   return errors;
 };
 

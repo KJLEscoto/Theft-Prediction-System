@@ -189,6 +189,7 @@ onMounted(() => {
   loadNotifications();
   paginatedData;
 });
+
 const loadNotifications = async () => {
   await fetchUser();
   if (username) {

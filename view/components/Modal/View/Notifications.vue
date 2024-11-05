@@ -8,33 +8,19 @@
   >
     <div class="h-auto w-full p-7 flex flex-col gap-3">
       <!-- Header -->
-      <section class="flex justify-between items-center">
-        <h1 class="text-lg font-semibold">
+      <section class="flex justify-between items-end">
+        <h1 v-if="user.role == 'client'" class="text-lg font-semibold">
           Motion Detected
-          <span
-            v-if="user.role == 'superadmin' || user.role == 'admin'"
-            class="text-blue-600 dark:text-blue-500 truncate"
-          >
-            | {{ notification.username }}
-          </span>
         </h1>
+        <p v-else class="font-medium text-sm dark:opacity-50">Detected by:</p>
         <UButton
           icon="i-lucide-x"
           @click="closeModal"
           class="flex justify-center items-center text-sm rounded-full dark:bg-red-600 dark:hover:bg-red-600/75 bg-red-600 hover:bg-red-600/75 dark:text-custom-100"
-          size="2xs"
-        />
+          size="2xs" />
       </section>
-
-      <h1
-        v-if="user.role == 'superadmin' || user.role == 'admin'"
-        class="text-sm opacity-60"
-      >
-        Detected by:
-        <span
-          class="font-bold capitalize dark:text-custom-300 text-custom-800"
-          >{{ notification.name }}</span
-        >
+      <h1 v-if="user.role == 'superadmin' || user.role == 'admin'" class="dark:opacity-70 text-xl font-bold -mt-2">
+        <span class="truncate capitalize">{{ notification.name }}</span> | {{ notification.username }}
       </h1>
 
       <hr class="border-custom-300 dark:border-custom-700" />
@@ -101,6 +87,8 @@
 <script setup>
 import { formatDate } from "~/assets/js/formatDate";
 import { user } from "~/assets/js/userLogged";
+
+
 
 // Receive notification data as a prop
 const props = defineProps({

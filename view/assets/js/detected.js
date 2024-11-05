@@ -13,7 +13,7 @@ const mapNotificationData = (data) => {
     date_captured: formatDate(data.created_at),
     deleted_at: data.deleted_at,
     name: `${data.user.first_name} ${
-      data.user.middle_initial ? data.user.middle_initial + " " : ""
+      data.user.middle_initial ? data.user.middle_initial + ". " : ""
     }${data.user.last_name}`,
   };
 };
