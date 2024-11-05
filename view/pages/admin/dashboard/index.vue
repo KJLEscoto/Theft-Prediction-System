@@ -10,7 +10,12 @@
       Today | {{ today }}
     </div>
 
-    <div class="grid grid-cols-1 gap-5 w-full h-auto dark:text-custom-400">
+    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
+      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+      In a moment...
+    </span>
+
+    <div v-else class="grid grid-cols-1 gap-5 w-full h-auto dark:text-custom-400">
       <section class="flex flex-col gap-5">
         <div class="flex items-center w-full gap-5">
           <h1 class="min-w-max">Recently Detected</h1>
@@ -113,6 +118,7 @@
               >
                 <div class="relative">
                   <img
+                    draggable="false"
                     v-if="user.avatar"
                     class="rounded-full w-14 h-14 border-2 border-custom-400 dark:border-custom-300"
                     :src="user.avatar"
@@ -144,7 +150,7 @@
               v-else
               class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold"
             >
-              No users found
+              No Users Found.
             </div>
           </div>
         </div>
@@ -185,8 +191,10 @@ import {
 } from "~/assets/js/users";
 import { detected, fetchAllNotifications } from "~/assets/js/detected";
 import { fetchMotions, motions } from "~/assets/js/motions";
-import { notifications } from "~/assets/js/notifications";
-import { initial } from "~/assets/js/userLogged";
+import { user } from "~/assets/js/userLogged";
+
+// import { notifications } from "~/assets/js/notifications";
+// import { initial } from "~/assets/js/userLogged";
 
 definePageMeta({
   layout: "sidebar",
@@ -226,12 +234,12 @@ const cards = [
   {
     icon: "i-lucide-user-round-check",
     total: activeCount, // Will be updated after loadUsers runs
-    label: "Active Users",
+    label: "Active Accounts",
   },
   {
     icon: "i-lucide-user-round-x",
     total: inactiveCount, // Will be updated after loadUsers runs
-    label: "Inactive Users",
+    label: "Inactive Accounts",
   },
   {
     icon: "i-lucide-hand",
@@ -312,8 +320,8 @@ const loadUsers = async () => {
   });
 
   // Update the cards array with the new active and inactive counts
-  cards.find((card) => card.label === "Active Users").total = activeCount;
-  cards.find((card) => card.label === "Inactive Users").total = inactiveCount;
+  cards.find((card) => card.label === "Active Accounts").total = activeCount;
+  cards.find((card) => card.label === "Inactive Accounts").total = inactiveCount;
 
   // Update the clients and admins references
   clients.value = clientCount; // Set the count of clients

@@ -37,33 +37,19 @@
         </UInput>
       </div>
 
-      <!-- Pagination and Item Count -->
-      <div class="grid items-center gap-2">
-        <div class="lg:flex justify-end hidden">
-          <span class="text-xs">
-            Showing
-            <span class="font-medium">{{ startItem }}</span>
-            -
-            <span class="font-medium">{{ endItem }}</span>
-            of
-            <span class="font-medium">{{ totalNotifications }}</span>
-            results
-          </span>
-        </div>
-        <UPagination
-          :model-value="currentPage"
-          :page-count="pageCount"
-          :total="totalNotifications"
-          class="flex justify-center"
-          @update:model-value="updatePage"
-          :ui="{
-            color: 'gray',
-            wrapper: 'flex items-center gap-1',
-            rounded: '!rounded-full min-w-[30px] justify-center',
-            default: { activeButton: { variant: 'outline' } },
-          }"
-        />
-      </div>
+      <UPagination
+        :model-value="currentPage"
+        :page-count="pageCount"
+        :total="totalNotifications"
+        class="flex justify-center"
+        @update:model-value="updatePage"
+        :ui="{
+          color: 'gray',
+          wrapper: 'flex items-center gap-1',
+          rounded: '!rounded-full min-w-[30px] justify-center',
+          default: { activeButton: { variant: 'outline' } },
+        }"
+      />
     </div>
 
     <!-- Table for Notifications -->
@@ -113,7 +99,7 @@
     </UTable>
 
     <!-- Item Count for Small Screens -->
-    <div class="lg:hidden flex justify-center">
+    <div class="flex justify-center">
       <span class="text-xs">
         Showing
         <span class="font-medium">{{ startItem }}</span>

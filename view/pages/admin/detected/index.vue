@@ -5,11 +5,22 @@
     <h1 class="text-lg font-semibold text-custom-800 dark:text-white">
       List of Detected Motions
     </h1>
-    <TableDetected />
+
+    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
+      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+      In a moment...
+    </span>
+
+    <span v-else>
+      <TableDetected />
+    </span>
   </div>
 </template>
 
 <script setup>
+import { user } from '~/assets/js/userLogged';
+
+
 definePageMeta({
   layout: "sidebar",
 });

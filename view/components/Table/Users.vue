@@ -75,6 +75,21 @@
         </span>
       </template>
 
+      <template #name-data="{ row }">
+        <div class="capitalize">
+          {{ row.name }}
+        </div>
+      </template>
+
+      <template #role-data="{ row }">
+        <div>
+          <UKbd
+            class="text-center rounded-full px-2 py-1 bg-custom-700 text-custom-100 dark:text-custom-200 dark:bg-custom-900 dark:border dark:border-custom-500 cursor-default"
+            :value="row.role"
+          />
+        </div>
+      </template>
+
       <template #status-data="{ row }">
         <UKbd :class="{
           'dark:border bg-green-600 dark:border-green-700 text-custom-100 dark:text-green-400 cursor-default px-2 rounded-full': row.status === 'active',

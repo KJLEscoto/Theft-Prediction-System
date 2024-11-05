@@ -12,7 +12,12 @@
       />
     </header>
 
-    <div class="flex flex-col gap-5 h-auto w-full">
+    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
+      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+      In a moment...
+    </span>
+
+    <div v-else class="flex flex-col gap-5 h-auto w-full">
       <div
         class="flex flex-col h-auto max-h-max w-full gap-5 lg:p-10 p-5 rounded dark:bg-custom-900 bg-custom-100 border border-custom-300 dark:border-custom-700"
       >
@@ -66,7 +71,7 @@
                 }"
               />
               <UKbd
-                class="text-center rounded-full px-2 py-1 bg-custom-700 text-custom-100 dark:text-custom-200 dark:bg-custom-900 dark:border dark:border-custom-500"
+                class="text-center rounded-full px-2 py-1 bg-custom-700 text-custom-100 dark:text-custom-200 dark:bg-custom-900 dark:border dark:border-custom-500 cursor-default"
                 :value="user.role"
               />
             </div>
@@ -344,9 +349,10 @@
           </section>
         </section>
       </div>
-    </div>
+      
     <Footer />
-  </div>
+    </div>
+    </div>
 </template>
 
 <script setup lang="ts">

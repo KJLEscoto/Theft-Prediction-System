@@ -3,18 +3,18 @@
 
       <section 
         v-show="!camera" 
-        class="flex flex-col gap-3 items-center justify-center h-full w-full cursor-default bg-custom-950 dark:bg-black">
+        class="flex flex-col gap-3 items-center justify-center h-full w-full cursor-default bg-black dark:bg-black">
 
         <div class="text-red-500 grid justify-center">
           <UIcon 
             class="w-auto h-10 m-auto" 
             name="i-lucide-video-off" />
           <p class="text-xs tracking-wider font-bold">
-            No Camera Detected.
+            No Camera Available.
           </p>
         </div>
 
-        <div class="cursor-default text-white flex gap-2 items-center">
+        <!-- <div class="cursor-default text-white flex gap-2 items-center">
           Choose Camera: 
           <USelect
             color="white"
@@ -32,14 +32,14 @@
                 :loading-icon="save.icon.value"
                 @click="handleClick"/>
             </div>
-        </div>
+        </div> -->
 
 
       </section>
 
       <section 
         v-show="camera" 
-        class="flex items-center justify-center h-full w-full bg-custom-950 dark:bg-black relative">
+        class="flex items-center justify-center h-full w-full bg-black dark:bg-black relative">
       
         <img :src="videoFeedUrl" class="h-full w-full object-cover block border-none"/>
 
