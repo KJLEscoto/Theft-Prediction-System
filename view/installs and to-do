@@ -43,9 +43,16 @@ BUHATA NI BAJA:
 7. avatars need fix ✅
 8. screenshot dashboard admin 
 9. i max nalang nato ang avatar (500), pag 501 ang itype or iincrement kay mag error (max 500 only) kay pag maabot ug 1k++ kay mag lag hahaaha yawa stress test ra kaayo.✅ 
-10. pag irefresh ang page sa list of avatars kay ma 120 balik.✅
-11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error.✅
-12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32).✅
+10. pag irefresh ang page sa list of avatars kay ma 120 balik. ❌
+11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error. ❌
+12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32). ✅
+---- NEW -----
+13. pag mag add kag user dapat ang middle initial ug avatar pwede null or dili required
+14. pag mag add kog user, kay mudawat syag mali na phone number. siguro same ni pag mag update pd
+15. abriha ang modal sa detected, naay (Rochy R. Cocjin | rochyyy).. pero pag i view details si rochy nya adto sa notifications log tapos i-view ang modal, ang mugawas ra kay (| rochyyy) wala syay fullname wtf.
+16. i default nalang sa ang avatar please. 120 kabuok. dili sa ta mag increment ug decrement. DELETE ALL FUCKING CODE ON THIS. static sa nato ang avatar hehe 120 kabuok. 
+DAPAT MA SAVE SA DB ANG AVATAR PLEAASE, ang ma save kay link (https://robohash.org/set_set3/bgset_bg1/{number}/.png?size=1000x1000)
+
 
 BUHATA NI KENT:
 
@@ -53,12 +60,17 @@ BUHATA NI KENT:
 2. naay error message pag letters iyang gi type sa contacts, then mu error if dili philippine na no. iyang gi typed,
    problem is walay color ang error message ✅
 
+
 ADDED baja:
 - makita gihapon sa detect page maskin na delete na ang user or ang motion. ✅
+-- 
 
 ADDED kent:
 - can now reset avatar ✅
 - active and inactive users > 0 catch ✅
+-- added icons on active and inactive, basin maalaan ug active meaning gagamit sya sa system karon. 
+-- detected modal added fullname ug username for clarity shits
+-- 
 
 
 Notes:

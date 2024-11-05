@@ -72,7 +72,10 @@
 
           <section class="flex justify-center w-full gap-5 px-5 flex-wrap">
             <div class="m-auto grid gap-2">
-              <p>Preview:</p>
+              <div class="flex justify-between">
+                <p>Preview:</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+              </div>
               <div class="flex justify-start gap-3 items-end">
                 <img
                   v-if="previewAvatar || state.user.avatar"
@@ -835,6 +838,10 @@ const links = reactive([
   { label: "Details", to: `/admin/users/${state.user.username}` },
   { label: "Update" },
 ]);
+
+function resetAvatar() {
+  setPreviewAvatar(null);
+}
 
 watch(
   () => state.user.username,
