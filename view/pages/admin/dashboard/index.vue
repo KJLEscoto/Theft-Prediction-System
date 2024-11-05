@@ -69,10 +69,14 @@
                     class="font-black text-[30px] w-14 h-14 dark:bg-custom-700 bg-custom-400 flex items-center justify-center rounded-full"
                     >{{ user.initial_letter }}</span
                   >
-                  <span class="w-5 h-5 flex justify-center items-center dark:bg-green-600 bg-green-700 absolute rounded-full bottom-0 -right-1">
-                    <UIcon class="absolute dark:text-white text-white p-[0.15em]" name="i-lucide-key-round"/>
+                  <span
+                    class="w-5 h-5 flex justify-center items-center dark:bg-green-600 bg-green-700 absolute rounded-full bottom-0 -right-1"
+                  >
+                    <UIcon
+                      class="absolute dark:text-white text-white p-[0.15em]"
+                      name="i-lucide-key-round"
+                    />
                   </span>
-                  
                 </div>
                 <span class="capitalize text-xs text-center truncate">{{
                   user.name
@@ -118,8 +122,13 @@
                     class="font-black text-[30px] w-14 h-14 dark:bg-custom-700 bg-custom-400 flex items-center justify-center rounded-full"
                     >{{ user.initial_letter }}</span
                   >
-                  <span class="w-5 h-5 flex justify-center items-center dark:bg-red-600 bg-red-700 absolute rounded-full bottom-0 -right-1">
-                    <UIcon class="absolute dark:text-white text-white p-[0.15em]" name="i-lucide-lock-keyhole"/>
+                  <span
+                    class="w-5 h-5 flex justify-center items-center dark:bg-red-600 bg-red-700 absolute rounded-full bottom-0 -right-1"
+                  >
+                    <UIcon
+                      class="absolute dark:text-white text-white p-[0.15em]"
+                      name="i-lucide-lock-keyhole"
+                    />
                   </span>
                 </div>
                 <span class="capitalize text-xs text-center truncate">{{
