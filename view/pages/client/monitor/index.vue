@@ -2,7 +2,15 @@
   <UseHead title="Monitor - Client" />
 
   <div class="lg:h-screen h-[700px] w-full p-5">
-    <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="true" />
+
+    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
+      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+      In a moment...
+    </span>
+
+    <span v-else>
+      <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="true" />
+    </span>
 
     <!-- <UButton 
       label="Alert!" 
@@ -18,6 +26,7 @@ definePageMeta({
 
 import { name, playSound, stopSound } from "~/assets/js/sound";
 import { fetchAvatars } from "~/assets/js/avatar";
+import { user } from "~/assets/js/userLogged";
 
 // for toast
 const toast = useToast();

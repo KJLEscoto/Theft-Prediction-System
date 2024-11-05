@@ -15,12 +15,22 @@
           size="xs" />
       </div>
     </header>
+
+    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
+      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+      In a moment...
+    </span>
     
-    <TableUsers />
+    <span v-else>
+      <TableUsers />
+    </span>
   </div>
 </template>
 
 <script setup>
+import { user } from '~/assets/js/userLogged';
+
+
 definePageMeta({
   layout: 'sidebar'
 })

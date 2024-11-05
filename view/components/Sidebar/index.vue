@@ -3,8 +3,6 @@ import { user } from '~/assets/js/userLogged';
 
 const open = ref(false);
 
-const loading = ref(true)
-
 const loadUser = async () => {
   await fetchUser();
 };
@@ -15,7 +13,6 @@ onMounted(() => {
   } else {
     loadUser(); // Load user data when the component mounts
   }
-  loading.value = false
 });
 </script>
 
