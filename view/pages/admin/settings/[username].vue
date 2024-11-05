@@ -76,7 +76,9 @@
             <div class="m-auto grid gap-2">
               <div class="flex justify-between">
                 <p>Preview:</p>
-                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">
+                  Reset
+                </p>
               </div>
               <div class="flex justify-start gap-3 items-end">
                 <img
@@ -623,7 +625,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 
   state.errors = [];
 
-  console.log("this is your avatar", state.user.avatar);
+  console.log("this is your avatar", previewAvatar._rawValue);
 
   const toast = useToast();
   name.value = "success_2";
@@ -633,6 +635,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
   load.label.value = "";
 
   const params = {
+    avatar: number,
     first_name: state.user.first_name,
     last_name: state.user.last_name,
     middle_initial: state.user.middle_initial,
@@ -641,7 +644,6 @@ async function onSubmit(event: FormSubmitEvent<any>) {
     username: state.user.username,
     password: state.user.password,
     email: state.user.email,
-    avatar: number,
   };
 
   try {

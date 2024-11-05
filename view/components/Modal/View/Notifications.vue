@@ -12,9 +12,7 @@
         <h1 class="text-lg font-semibold">
           Motion Detected
           <span
-            v-if="
-              user.role == 'superadmin' || user.role == 'admin'
-            "
+            v-if="user.role == 'superadmin' || user.role == 'admin'"
             class="text-blue-600 dark:text-blue-500 truncate"
           >
             | {{ notification.username }}
@@ -28,12 +26,14 @@
         />
       </section>
 
-      
-      <h1 v-if="user.role == 'superadmin' || user.role == 'admin'" class="text-sm opacity-60">
+      <h1
+        v-if="user.role == 'superadmin' || user.role == 'admin'"
+        class="text-sm opacity-60"
+      >
         Detected by:
         <span
           class="font-bold capitalize dark:text-custom-300 text-custom-800"
-          >full name sa user</span
+          >{{ notification.name }}</span
         >
       </h1>
 

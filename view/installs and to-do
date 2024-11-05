@@ -40,12 +40,12 @@ BUHATA NI BAJA:
 4. notifications fetch✅
 5. contact number (no letters)✅
 6. motions delete delay ✅
-7. avatars need fix ❌
+7. avatars need fix ✅
 8. screenshot dashboard admin 
-9. i max nalang nato ang avatar (500), pag 501 ang itype or iincrement kay mag error (max 500 only) kay pag maabot ug 1k++ kay mag lag hahaaha yawa stress test ra kaayo.
-10. pag irefresh ang page sa list of avatars kay ma 120 balik.
-11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error.
-12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32).
+9. i max nalang nato ang avatar (500), pag 501 ang itype or iincrement kay mag error (max 500 only) kay pag maabot ug 1k++ kay mag lag hahaaha yawa stress test ra kaayo.✅ 
+10. pag irefresh ang page sa list of avatars kay ma 120 balik.✅
+11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error.✅
+12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32).✅
 
 BUHATA NI KENT:
 
@@ -59,3 +59,12 @@ ADDED baja:
 ADDED kent:
 - can now reset avatar ✅
 - active and inactive users > 0 catch ✅
+
+
+Notes:
+- Sa avatar page, mag error na if 500+ or 0- ang gi submit. Kaso wala pay message mugawas, loading lang pirme.
+- maka type gihapon siya ug 500 pataas, and mu generate gihapon ang mga avatar maskin 9999 ang gi type
+
+Recommendations:
+- Basin walay unod imong avatar table sa database bantug mu 120 ang avatar pag i refresh, check lang ang avatar table sa database
+- pag mag create ka ug avatar dapat 1 ang id, tas sa avatar count kay kung pila ka avatar imong gusto

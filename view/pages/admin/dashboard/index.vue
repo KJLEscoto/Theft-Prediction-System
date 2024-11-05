@@ -51,7 +51,7 @@
           <div
             class="flex flex-col h-full overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
           >
-            <div v-if="activeUsers.length > 0"  class="flex">
+            <div v-if="activeUsers.length > 0" class="flex">
               <div
                 v-for="user in activeUsers"
                 :key="user.id"
@@ -82,7 +82,10 @@
                 />
               </div>
             </div>
-            <div v-else class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold">
+            <div
+              v-else
+              class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold"
+            >
               Only your account is active
             </div>
           </div>
@@ -127,7 +130,10 @@
                 />
               </div>
             </div>
-            <div v-else class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold">
+            <div
+              v-else
+              class="m-auto cursor-default text-sm text-custom-800 dark:text-custom-500 font-bold"
+            >
               No users found
             </div>
           </div>
@@ -276,7 +282,7 @@ const loadUsers = async () => {
 
   let activeCount = 1;
   let inactiveCount = 0;
-  let adminCount = 0; // Counter for admins
+  let adminCount = 1; // Counter for admins
   let clientCount = 0; // Counter for clients
 
   // Count active and inactive users, and count admins and clients
