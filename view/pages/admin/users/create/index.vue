@@ -75,7 +75,9 @@
             <div class="m-auto grid gap-2">
               <div class="flex justify-between">
                 <p>Preview:</p>
-                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">
+                  Reset
+                </p>
               </div>
               <div class="flex justify-start gap-3 items-end">
                 <img
@@ -100,9 +102,7 @@
                 <img
                   :class="[
                     'w-14 h-14 cursor-pointer',
-                    previewAvatar === avatar
-                      ? 'border-4'
-                      : 'border',
+                    previewAvatar === avatar ? 'border-4' : 'border',
                     'border-red-600 dark:border-red-800',
                   ]"
                   :src="avatar"
@@ -662,7 +662,7 @@ const state = reactive({
     role: "",
     username: "",
     password: "",
-    avatar: ""
+    avatar: "",
   },
 });
 
@@ -692,9 +692,13 @@ async function onError(event: FormErrorEvent) {
 }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
-  const url = previewAvatar._rawValue;
-  const match = url.match(/\/(\d+)\.png/);
-  const number = match ? (parseInt(match[1], 10) - 1).toString() : null;
+  let number = "";
+
+  if ((previewAvatar && previewAvatar._rawValue) || state.user.avatar) {
+    const url = previewAvatar._rawValue || state.user.avatar;
+    const match = url.match(/\/(\d+)\.png/);
+    number = match ? (parseInt(match[1], 10) - 1).toString() : "0";
+  }
 
   console.log("avatar number", number);
 

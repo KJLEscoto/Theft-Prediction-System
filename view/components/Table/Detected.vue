@@ -164,7 +164,6 @@ watch(q, () => (currentPage.value = 1));
 
 onMounted(() => {
   loadNotifications();
-  console.log("detected lets go", detected);
 });
 const loadNotifications = async () => {
   await fetchAllNotifications();

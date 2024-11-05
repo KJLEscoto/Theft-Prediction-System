@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->char('middle_initial', 1); // Ensure this is a single character
+            $table->char('middle_initial', 1)->nullable(); // Ensure this is a single character
             $table->string('phone_number');
             $table->string('email')->unique();
             $table->string('username');

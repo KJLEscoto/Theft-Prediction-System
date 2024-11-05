@@ -74,7 +74,9 @@
             <div class="m-auto grid gap-2">
               <div class="flex justify-between">
                 <p>Preview:</p>
-                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">Reset</p>
+                <p @click="resetAvatar" class="hover:opacity-50 cursor-pointer">
+                  Reset
+                </p>
               </div>
               <div class="flex justify-start gap-3 items-end">
                 <img
@@ -82,16 +84,31 @@
                   class="w-40 h-40 border-4 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || state.user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[150px] w-40 h-40 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ state.user.initial }}</span
+                >
                 <img
                   v-if="previewAvatar || state.user.avatar"
                   class="w-24 h-24 border-4 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || state.user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[50px] w-24 h-24 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ state.user.initial }}</span
+                >
                 <img
                   v-if="previewAvatar || state.user.avatar"
                   class="w-14 h-14 border-2 border-custom-400 dark:border-custom-300"
                   :src="previewAvatar || state.user.avatar"
                 />
+                <span
+                  v-else
+                  class="font-black text-[20px] w-14 h-14 border-4 border-custom-400 dark:border-custom-300 flex items-center justify-center"
+                  >{{ state.user.initial }}</span
+                >
               </div>
             </div>
 
@@ -682,6 +699,7 @@ const state = reactive({
     password: "",
     email: "",
     avatar: null,
+    initial: "",
   },
 });
 
@@ -712,7 +730,6 @@ async function onError(event: FormErrorEvent) {
 
 const { username } = useRoute().params;
 onMounted(() => {
-  console.log(username);
   getUser(username);
 });
 
@@ -742,6 +759,7 @@ async function getUser(username) {
       state.user.password = data.user.password;
       state.user.email = data.user.email;
       state.user.avatar = fetchSpecificAvatar(data.user.avatar);
+      state.user.initial = data.user.first_name.charAt(0);
     } else {
       console.error("Error fetching userrrr:", await response.json());
     }
@@ -752,10 +770,13 @@ async function getUser(username) {
 
 async function onSubmit() {
   const { user } = state; // Destructure to make code cleaner
+  let number = "";
 
-  const url = previewAvatar._rawValue;
-  const match = url.match(/\/(\d+)\.png/);
-  const number = match ? (parseInt(match[1], 10) - 1).toString() : null;
+  if ((previewAvatar && previewAvatar._rawValue) || state.user.avatar) {
+    const url = previewAvatar._rawValue || state.user.avatar;
+    const match = url.match(/\/(\d+)\.png/);
+    number = match ? (parseInt(match[1], 10) - 1).toString() : "0";
+  }
 
   state.errors = [];
   const toast = useToast();

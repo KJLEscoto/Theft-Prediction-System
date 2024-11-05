@@ -619,13 +619,15 @@ function resetAvatar() {
 }
 
 async function onSubmit(event: FormSubmitEvent<any>) {
-  const url = previewAvatar._rawValue;
-  const match = url.match(/\/(\d+)\.png/);
-  const number = match ? (parseInt(match[1], 10) - 1).toString() : null;
+  let number = "";
+
+  if ((previewAvatar && previewAvatar._rawValue) || state.user.avatar) {
+    const url = previewAvatar._rawValue || state.user.avatar;
+    const match = url.match(/\/(\d+)\.png/);
+    number = match ? (parseInt(match[1], 10) - 1).toString() : "0";
+  }
 
   state.errors = [];
-
-  console.log("this is your avatar", previewAvatar._rawValue);
 
   const toast = useToast();
   name.value = "success_2";

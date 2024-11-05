@@ -2,7 +2,7 @@ import { ref, watchEffect } from "vue";
 
 const AVATAR_BASE_URL = "https://robohash.org/set_set3/bgset_bg1/";
 
-const items = ref(0); // Reactive item count
+const items = ref(120); // Reactive item count
 const totalItems = computed(() => items.value);
 
 /**
@@ -49,5 +49,4 @@ export async function fetchAvatars() {
     console.error("Error fetching notifications:", error.message);
   }
 }
-
 export { items, avatars, totalItems, getSpecificAvatar };
