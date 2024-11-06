@@ -12,8 +12,15 @@
       />
     </header>
 
-    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
-      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+    <span
+      v-if="
+        !user.role || !['client', 'admin', 'superadmin'].includes(user.role)
+      "
+    >
+      <UIcon
+        class="animate-spin text-center"
+        name="i-heroicons-arrow-path-solid"
+      />
       In a moment...
     </span>
 
@@ -198,7 +205,11 @@
         <!-- display other errors here -->
         <div v-if="state.errors.length">
           <ul>
-            <li v-for="(error, index) in state.errors" :key="index" class="text-red-500 dark:text-red-400 text-normal font-bold text-center truncate -mt-3">
+            <li
+              v-for="(error, index) in state.errors"
+              :key="index"
+              class="text-red-500 dark:text-red-400 text-normal font-bold text-center truncate -mt-3"
+            >
               {{ error }}
             </li>
           </ul>
@@ -214,16 +225,15 @@
             @error="onError"
             class="space-y-2 w-full flex flex-col gap-5"
           >
-          
             <UFormGroup class="grid gap-2" name="phone" :ui="{ error: 'mt-1' }">
               <template #label>
                 <div class="flex items-center justify-start gap-1">
                   <UIcon name="i-lucide-phone" class="text-lg" />
                   <p class="text-base">
                     Add Phone
-                    <span class="font-bold text-red-700 dark:text-red-400"
+                    <!-- <span class="font-bold text-red-700 dark:text-red-400"
                       >(max: 3 only)</span
-                    >
+                    > -->
                   </p>
                 </div>
               </template>
@@ -244,7 +254,6 @@
                   <UInput
                     class="w-full"
                     v-model="state.user.contact_number"
-                    :disabled="phones.length == 3"
                     color="gray"
                     size="md"
                     :ui="{
@@ -280,8 +289,7 @@
               </template>
             </UFormGroup>
 
-            <UTooltip
-              :text="phones.length == 3 ? 'Max number reached' : 'Save number'"
+            <!-- <UTooltip
               class="w-full"
               :popper="{ arrow: true }"
               :ui="{
@@ -290,9 +298,9 @@
                   background: 'dark:before:bg-custom-950 before:bg-custom-300',
                 },
               }"
-            >
+            > -->
+            <span>
               <UButton
-                :disabled="phones.length == 3"
                 type="submit"
                 :label="save.label.value"
                 :loading="save.bool.value"
@@ -300,7 +308,7 @@
                 size="sm"
                 class="rounded dark:text-white dark:bg-green-500 bg-green-500 hover:bg-green-600 hover:dark:bg-green-600 flex justify-center w-full -mt-5"
               />
-            </UTooltip>
+            </span>
           </UForm>
 
           <div
@@ -349,10 +357,10 @@
           </section>
         </section>
       </div>
-      
-    <Footer />
+
+      <Footer />
     </div>
-    </div>
+  </div>
 </template>
 
 <script setup lang="ts">

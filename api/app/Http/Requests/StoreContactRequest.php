@@ -22,7 +22,13 @@ class StoreContactRequest extends FormRequest
     public function rules()
     {
         return [
-            'contact_number' => 'required|string|size:10|regex:/^[0-9]{10}$/',
+            'contact_number' => [
+                'required',
+                'string',
+                'size:10',
+                'regex:/^[0-9]{10}$/',
+                'unique:contacts,contact_number,NULL,id,user_id,' . $this->user()->id,
+            ],
             'is_enabled' => 'boolean',
         ];
     }

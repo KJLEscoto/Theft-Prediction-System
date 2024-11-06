@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'middle_initial' => fake()->randomLetter(),
-            'phone_number' => fake()->phoneNumber(),
+            'phone_number' => '9' . fake()->numerify('#########'), // Philippine format
             'status' => fake()->randomElement(['active', 'inactive']),
             'role' => fake()->randomElement(['admin', 'client', 'superadmin']),
             'gender' => fake()->randomElement(['male', 'female']),

@@ -31,9 +31,9 @@ class ContactController extends Controller
         // Check if the user already has 3 contacts
         $contactCount = Contacts::where('user_id', Auth::id())->count();
 
-        if ($contactCount >= 3) {
-            return response()->json(['message' => 'You can only have up to 3 contacts.'], 400);
-        }
+        // if ($contactCount >= 3) {
+        //     return response()->json(['message' => 'You can only have up to 3 contacts.'], 400);
+        // }
 
         $contact = Contacts::create([
             'user_id' => Auth::id(),
@@ -83,4 +83,14 @@ class ContactController extends Controller
 
         return response()->json(['message' => 'Contact status updated successfully.', 'contact' => $contact]);
     }
+
+    public function fetchEnabled()
+    {
+        $enabledContacts = Contacts::where('user_id', Auth::id())
+                                ->where('is_enabled', 1)
+                                ->get();
+        
+        return response()->json($enabledContacts);
+    }
+
 }

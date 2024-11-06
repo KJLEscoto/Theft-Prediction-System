@@ -27,9 +27,9 @@ class MotionsSeeder extends Seeder
                 'threshold' => fake()->randomFloat(1, 60, 100),
             ],
             [
-                'name' => 'pocket',
-                'description' => 'This action is pocket.',
-                'video_path' => 'pocket.mp4',
+                'name' => 'conceal',
+                'description' => 'This action is conceal.',
+                'video_path' => 'conceal.mp4',
                 'threshold' => fake()->randomFloat(1, 60, 100),
             ],
         ];

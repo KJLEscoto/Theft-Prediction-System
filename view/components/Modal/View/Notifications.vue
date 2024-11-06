@@ -17,10 +17,15 @@
           icon="i-lucide-x"
           @click="closeModal"
           class="flex justify-center items-center text-sm rounded-full dark:bg-red-600 dark:hover:bg-red-600/75 bg-red-600 hover:bg-red-600/75 dark:text-custom-100"
-          size="2xs" />
+          size="2xs"
+        />
       </section>
-      <h1 v-if="user.role == 'superadmin' || user.role == 'admin'" class="dark:opacity-70 text-xl font-bold -mt-2">
-        <span class="truncate capitalize">{{ notification.name }}</span> | {{ notification.username }}
+      <h1
+        v-if="user.role == 'superadmin' || user.role == 'admin'"
+        class="dark:opacity-70 text-xl font-bold -mt-2"
+      >
+        <span class="truncate capitalize">{{ notification.name }}</span> |
+        {{ notification.username }}
       </h1>
 
       <hr class="border-custom-300 dark:border-custom-700" />
@@ -28,21 +33,19 @@
       <!-- Notification Details -->
       <section class="flex flex-col gap-1">
         <h1 class="font-medium">
-          Name:
-          <span
-            class="font-bold capitalize dark:text-custom-300 text-custom-800"
-            >{{ notification.motion_detected }}</span
+          <span class="font-bold capitalize dark:text-red-300 text-red-500"
+            >POTENTIAL THEFT</span
           >
         </h1>
 
-        <p class="text-sm font-medium">
+        <!-- <p class="text-sm font-medium">
           Description:
           <span class="dark:text-custom-300 text-custom-800 font-normal">{{
             notification.description
           }}</span>
-        </p>
+        </p> -->
 
-        <p class="text-sm font-medium">
+        <!-- <p class="text-sm font-medium">
           Threshold:
           <span
             v-if="notification.threshold <= 74"
@@ -52,7 +55,7 @@
           <span v-else class="text-red-500 font-extrabold"
             >{{ notification.threshold }}%</span
           >
-        </p>
+        </p> -->
 
         <div
           class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-300 border dark:border-custom-700"
@@ -60,7 +63,7 @@
           <img
             v-if="notification.screenshot"
             class="w-auto h-[250px] object-cover"
-            :src="notification.screenshot"
+            :src="`/Snapshots/${notification.screenshot}`"
           />
 
           <div
@@ -87,8 +90,6 @@
 <script setup>
 import { formatDate } from "~/assets/js/formatDate";
 import { user } from "~/assets/js/userLogged";
-
-
 
 // Receive notification data as a prop
 const props = defineProps({

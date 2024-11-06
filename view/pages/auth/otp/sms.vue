@@ -54,11 +54,25 @@
             <p class="font-normal">
               Enter the code from the <strong>Phone No.</strong> we sent to
             </p>
+            <span
+              v-if="
+                !user.role ||
+                !['client', 'admin', 'superadmin'].includes(user.role) ||
+                !user.phone_number
+              "
+            >
+              <UIcon
+                class="animate-spin text-center"
+                name="i-heroicons-arrow-path-solid"
+              />
+            </span>
             <p
+              v-else
               class="font-medium text-base italic text-blue-700 dark:text-blue-500"
             >
               +63{{ user.phone_number }}
             </p>
+            <p></p>
           </div>
         </template>
 

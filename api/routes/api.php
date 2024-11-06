@@ -49,9 +49,11 @@ Route::get('/avatars', [AvatarController::class, 'index']);
 Route::put('/avatars/{id}', [AvatarController::class, 'set']);
 
 Route::middleware('auth:sanctum')->get('/user/contact', [ContactController::class, 'index']);
+Route::middleware('auth:sanctum')->get('/user/contact/enabled', [ContactController::class, 'fetchEnabled']);
 Route::middleware('auth:sanctum')->post('/user/contact', [ContactController::class, 'store']);
 Route::middleware('auth:sanctum')->delete('/user/contact/{contact_id}', [ContactController::class, 'destroy']);
 Route::middleware('auth:sanctum')->put('/user/contact/{contact_id}', [ContactController::class, 'toggleEnable']);
 
 Route::middleware('auth:sanctum')->get('/active', [AuthController::class, 'getActive']);
 Route::get('/inactive', [AuthController::class, 'getInactive']);
+

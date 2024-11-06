@@ -621,6 +621,12 @@ function resetAvatar() {
 async function onSubmit(event: FormSubmitEvent<any>) {
   let number = "";
 
+  console.log(
+    "abatarasdsadadasdasds",
+    state.user.avatar,
+    previewAvatar._rawValue
+  );
+
   if ((previewAvatar && previewAvatar._rawValue) || state.user.avatar) {
     const url = previewAvatar._rawValue || state.user.avatar;
     const match = url.match(/\/(\d+)\.png/);

@@ -2,9 +2,15 @@
   <UseHead title="Monitor - Client" />
 
   <div class="lg:h-screen h-[700px] w-full p-5">
-
-    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
-      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+    <span
+      v-if="
+        !user.role || !['client', 'admin', 'superadmin'].includes(user.role)
+      "
+    >
+      <UIcon
+        class="animate-spin text-center"
+        name="i-heroicons-arrow-path-solid"
+      />
       In a moment...
     </span>
 
@@ -12,10 +18,11 @@
       <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="true" />
     </span>
 
-    <!-- <UButton 
-      label="Alert!" 
-      class="absolute top-52 right-10 rounded" 
-      @click="showToast"/> -->
+    <!-- <UButton
+      label="Alert!"
+      class="absolute top-52 right-10 rounded"
+      @click="showToast"
+    /> -->
   </div>
 </template>
 
@@ -27,11 +34,11 @@ definePageMeta({
 import { name, playSound, stopSound } from "~/assets/js/sound";
 import { fetchAvatars } from "~/assets/js/avatar";
 import { user } from "~/assets/js/userLogged";
+import { ref } from "vue";
 
 // for toast
 const toast = useToast();
 const lastCheckTime = ref(null);
-name.value = "alert_1";
 
 const onClick = () => {
   navigateTo("/client/notifications");
@@ -39,9 +46,66 @@ const onClick = () => {
   toast.clear();
 };
 
-const showToast = () => {
-  playSound();
+const contacts = ref([]);
 
+const fetchContact = async () => {
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:8000/api/user/contact/enabled",
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("_token"),
+        },
+      }
+    );
+    const data = await response.json();
+
+    // Check if data is an array and contains contact information
+    if (Array.isArray(data) && data.length) {
+      contacts.value = data.map((contact) => `+63` + contact.contact_number); // Save only contact numbers
+      console.log("Fetched contacts:", contacts.value);
+    } else {
+      console.log("No contacts found.");
+    }
+  } catch (error) {
+    console.log("Error fetching contacts:", error);
+  }
+};
+
+const detected = async () => {
+  showToast();
+
+  await fetchContact();
+
+  console.log("kani na jud final", contacts.value);
+  const params = {
+    phone_numbers: contacts.value,
+    message: "Potential Theft Detected",
+  };
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/alert-sms", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("_token"),
+      },
+      body: JSON.stringify(params),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("successful, na send na", data);
+    } else {
+      console.log("Error:", response.statusText);
+    }
+  } catch (error) {
+    console.log("error sa pag send sa message", error);
+  }
+};
+
+const showToast = async () => {
+  playSound();
   toast.add({
     title: "Motion Detected!",
     click: onClick,
@@ -65,17 +129,21 @@ const showToast = () => {
 // checks for any detected motion from the database
 const checkForNewEntries = async () => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/trains");
+    const response = await fetch("http://127.0.0.1:8000/api/notifications", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("_token"), // Use 'Bearer' prefix for token
+      },
+    });
+
     const data = await response.json();
-    const latestEntry = data.trains.length
-      ? data.trains[data.trains.length - 1]
-      : null;
+    const latestEntry = data.length ? data[data.length - 1] : null;
     const latestEntryTime = new Date(latestEntry.created_at).toISOString();
 
     // calls the notification functions if the condiition is met
     if (latestEntryTime > lastCheckTime.value) {
       // sendSms(new Date(latestEntryTime))
-      showToast();
+      detected();
 
       // updates the latest detected motion
       lastCheckTime.value = latestEntryTime;
@@ -87,12 +155,20 @@ const checkForNewEntries = async () => {
 
 // kicks start the app on mount
 onMounted(async () => {
+  name.value = "alert_1";
   fetchAvatars();
+  await fetchContact();
+  console.log("dara ang contacts", contacts.value);
   try {
     // fetches the latest entry time on mount
-    const response = await fetch("http://127.0.0.1:8000/api/trains");
+    const response = await fetch("http://127.0.0.1:8000/api/notifications", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("_token"), // Use 'Bearer' prefix for token
+      },
+    });
     const data = await response.json();
-    const latestEntry = data.trains[data.trains.length - 1];
+    const latestEntry = data[data.length - 1];
 
     // initializes the variable lastCheckTime
     lastCheckTime.value = new Date(latestEntry.created_at).toISOString();
