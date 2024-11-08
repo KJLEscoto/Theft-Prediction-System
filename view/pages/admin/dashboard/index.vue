@@ -10,12 +10,22 @@
       Today | {{ today }}
     </div>
 
-    <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">
-      <UIcon class="animate-spin text-center" name="i-heroicons-arrow-path-solid"/>
+    <span
+      v-if="
+        !user.role || !['client', 'admin', 'superadmin'].includes(user.role)
+      "
+    >
+      <UIcon
+        class="animate-spin text-center"
+        name="i-heroicons-arrow-path-solid"
+      />
       In a moment...
     </span>
 
-    <div v-else class="grid grid-cols-1 gap-5 w-full h-auto dark:text-custom-400">
+    <div
+      v-else
+      class="grid grid-cols-1 gap-5 w-full h-auto dark:text-custom-400"
+    >
       <section class="flex flex-col gap-5">
         <div class="flex items-center w-full gap-5">
           <h1 class="min-w-max">Recently Detected</h1>
@@ -264,14 +274,12 @@ const cards = [
 ];
 
 // fetch screenshots
-const items = [
-  "https://picsum.photos/1920/1080?random=10",
-  "https://picsum.photos/1920/1080?random=3",
-  "https://picsum.photos/1920/1080?random=1",
-  "https://picsum.photos/1920/1080?random=4",
-  "https://picsum.photos/1920/1080?random=5",
-  "https://picsum.photos/1920/1080?random=7",
-];
+// Assuming `detected` is correctly imported and contains the necessary data
+const items = computed(() => {
+  return detected
+    .slice(0, 6)
+    .map((notification) => `/Snapshots/${notification.screenshot}`);
+});
 
 const date = new Date();
 const today = date.toLocaleString("en-US", { month: "long", day: "numeric" });
@@ -280,6 +288,12 @@ const carouselRef = ref();
 
 onMounted(() => {
   fetchAllNotifications();
+  console.log("mao ni mga detected", detected[0].screenshot);
+  console.log("mao ni mga detected", detected[1].screenshot);
+  console.log("mao ni mga detected", detected[2].screenshot);
+  console.log("mao ni mga detected", detected[3].screenshot);
+  console.log("mao ni mga detected", detected[4].screenshot);
+  console.log("mao ni mga detected", detected[5].screenshot);
   fetchAvatars();
   fetchMotions();
   motionsCount.value = motions;
@@ -321,7 +335,8 @@ const loadUsers = async () => {
 
   // Update the cards array with the new active and inactive counts
   cards.find((card) => card.label === "Active Accounts").total = activeCount;
-  cards.find((card) => card.label === "Inactive Accounts").total = inactiveCount;
+  cards.find((card) => card.label === "Inactive Accounts").total =
+    inactiveCount;
 
   // Update the clients and admins references
   clients.value = clientCount; // Set the count of clients

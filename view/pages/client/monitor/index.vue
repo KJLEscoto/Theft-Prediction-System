@@ -21,7 +21,7 @@
     <!-- <UButton
       label="Alert!"
       class="absolute top-52 right-10 rounded"
-      @click="showToast"
+      @click="detectedBy"
     /> -->
   </div>
 </template>
@@ -35,6 +35,10 @@ import { name, playSound, stopSound } from "~/assets/js/sound";
 import { fetchAvatars } from "~/assets/js/avatar";
 import { user } from "~/assets/js/userLogged";
 import { ref } from "vue";
+import {
+  detected as detectAlias,
+  fetchAllNotifications,
+} from "~/assets/js/detected";
 
 // for toast
 const toast = useToast();
@@ -73,12 +77,33 @@ const fetchContact = async () => {
   }
 };
 
-const detected = async () => {
+const detectedBy = async () => {
+  await fetchAllNotifications();
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8000/api/notification/${
+        detectAlias[detectAlias.length - 1].id
+      }`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("_token"), // Use 'Bearer' prefix for token
+        },
+      }
+    );
+
+    if (response) {
+      console.log("success updated", response);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const potential_detected = async () => {
   showToast();
-
+  await detectedBy();
   await fetchContact();
-
-  console.log("kani na jud final", contacts.value);
   const params = {
     phone_numbers: contacts.value,
     message: "Potential Theft Detected",
@@ -92,7 +117,6 @@ const detected = async () => {
       },
       body: JSON.stringify(params),
     });
-
     if (response.ok) {
       const data = await response.json();
       console.log("successful, na send na", data);
@@ -139,11 +163,13 @@ const checkForNewEntries = async () => {
     const data = await response.json();
     const latestEntry = data.length ? data[data.length - 1] : null;
     const latestEntryTime = new Date(latestEntry.created_at).toISOString();
+    console.log("hi", data);
 
     // calls the notification functions if the condiition is met
     if (latestEntryTime > lastCheckTime.value) {
       // sendSms(new Date(latestEntryTime))
-      detected();
+      console.log("hi");
+      potential_detected();
 
       // updates the latest detected motion
       lastCheckTime.value = latestEntryTime;

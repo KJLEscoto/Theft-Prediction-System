@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('notification/{username}', [NotificationsController::class, 'getSpecificNotification']);
+Route::middleware('auth:sanctum')->put('notification/{id}', [NotificationsController::class, 'detectedBy']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [AuthController::class, 'getAllUsers']); // Get all users

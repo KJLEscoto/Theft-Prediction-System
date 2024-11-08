@@ -5,6 +5,7 @@ export const detected = reactive([]);
 
 const mapNotificationData = (data) => {
   return {
+    id: data.id,
     motion_detected: data.motion.name,
     username: data.user.username,
     description: data.motion.description,
