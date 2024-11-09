@@ -1,0 +1,10 @@
+INSTALL THE REQUIREMENTS
+-----------------------------------
+pip install -r requirements.txt----
+-----------------------------------
+
+CHANGE DIRECTORY SA APP.PY (LINE 47) CHANGE IT INTO DIRECTORY SAS PUBLIC SA NUXT
+
+
+
+https://github.com/Donny-GUI/tkinter-to-customtkinter-converter
