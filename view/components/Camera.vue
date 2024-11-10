@@ -12,7 +12,7 @@
 
       <div class="flex justify-between absolute bottom-0 w-full items-center">
         <section
-          class="text-white dark:text-custom-300 w-auto h-auto py-1 px-2 text-sm cursor-default bg-custom-400 dark:bg-custom-800"
+          class="text-white dark:text-custom-300 w-auto h-auto py-1 px-2 text-sm cursor-default bg-custom-700 dark:bg-custom-800"
         >
           <h1 class="text-lg font-bold">{{ currentDate }}</h1>
           <p class="font-bold">{{ currentTime }}</p>
@@ -42,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+
 const props = defineProps({
   videoUrl: {
     type: String,
@@ -61,7 +62,7 @@ const updateDateTime = () => {
   const now = new Date();
   currentDate.value = now.toLocaleDateString();
   currentTime.value = now.toLocaleTimeString();
-};
+};  
 
 onMounted(() => {
   updateDateTime();
