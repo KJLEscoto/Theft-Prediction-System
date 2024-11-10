@@ -24,4 +24,4 @@ logs
 !.env.example
 
 # Screenshots
-/public/**/*.jpg
+~/view/public/Snapshots/*.jpg
