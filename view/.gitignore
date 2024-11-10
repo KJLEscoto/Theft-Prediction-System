@@ -24,6 +24,6 @@ logs
 !.env.example
 
 # Screenshots
-public/Screenshots/*
-!public/Screenshots/.gitkeep
+public/Snapshots/*
+!public/Snapshots/.gitkeep
 
