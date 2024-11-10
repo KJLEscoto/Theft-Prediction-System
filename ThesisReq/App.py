@@ -45,7 +45,7 @@ class BodyLanguageDetector:
         self.db_connection = self.connect_to_database()
 
         # Set the directory for saving snapshots
-        self.snapshot_dir = r'C:\Thesis_v2-master\Thesis_v2-master\view\public\Snapshots'
+        self.snapshot_dir = r'C:\Users\Kent\Desktop\Coding Portfolio\FULL STACK DEV\Thesis_v3\view\public\Snapshots'
         os.makedirs(self.snapshot_dir, exist_ok=True)  # Ensure the directory exists
 
     def connect_to_database(self):
@@ -156,7 +156,7 @@ class BodyLanguageDetector:
                 self.movement_buffer.clear()
 
     def generate_frames(self):
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
         try:
             while cap.isOpened():
                 ret, frame = cap.read()

@@ -32,56 +32,12 @@ NPM - npm install
   / monitor - static camera selection
   / settings - edit, static bulk sms 3:max (add, select, remove)
 
+
+
+
 BUHATA NI BAJA:
 
-1. Dapat wala ang admin or superadmin nga naka login sa active users.✅
-2. Detect count mali ang fetch.✅
-3. edit user avatar✅
-4. notifications fetch✅
-5. contact number (no letters)✅
-6. motions delete delay ✅
-7. avatars need fix ✅
-8. screenshot dashboard admin 
-9. i max nalang nato ang avatar (500), pag 501 ang itype or iincrement kay mag error (max 500 only) kay pag maabot ug 1k++ kay mag lag hahaaha yawa stress test ra kaayo.✅ 
-10. pag irefresh ang page sa list of avatars kay ma 120 balik. ✅
-11. sa settings, pag mag update ko nya wala koy gihilabtan sa tanan form kay mag error. ✅
-12. modal sa detected, retrieve full name sa user (modal/view/notifications.vue - line 32). ✅
----- NEW -----
-13. pag mag add kag user dapat ang middle initial ug avatar pwede null or dili required✅
-14. pag mag add kog user, kay mudawat syag mali na phone number. siguro same ni pag mag update pd✅
-15. abriha ang modal sa detected, naay (Rochy R. Cocjin | rochyyy).. pero pag i view details si rochy nya adto sa notifications log tapos i-view ang modal, ang mugawas ra kay (| rochyyy) wala syay fullname wtf.✅
-16. i default nalang sa ang avatar please. 120 kabuok. dili sa ta mag increment ug decrement. DELETE ALL FUCKING CODE ON THIS. static sa nato ang avatar hehe 120 kabuok. 
-DAPAT MA SAVE SA DB ANG AVATAR PLEAASE, ang ma save kay link (https://robohash.org/set_set3/bgset_bg1/{number}/.png?size=1000x1000)
-
-
-BUHATA NI KENT:
-
-1. ang view sa detected, dili ma open ✅
-2. naay error message pag letters iyang gi type sa contacts, then mu error if dili philippine na no. iyang gi typed,
-   problem is walay color ang error message ✅
-
---new--
-3. Pag null ang name sa mga users kay naay null makabutang AHHAHA weird.
-4. Para sakoa okay ra ang avatars. Pero i default nimo okay lang pud. Kung gusto nimo i try, ibutang lang tung sa database na value
-
-
-ADDED baja:
-- makita gihapon sa detect page maskin na delete na ang user or ang motion. ✅
--- 
-
-ADDED kent:
-- can now reset avatar ✅
-- active and inactive users > 0 catch ✅
--- added icons on active and inactive, basin maalaan ug active meaning gagamit sya sa system karon. 
--- detected modal added fullname ug username for clarity shits
--- 
-
-
-Notes:
-- Sa avatar page, mag error na if 500+ or 0- ang gi submit. Kaso wala pay message mugawas, loading lang pirme.
-- maka type gihapon siya ug 500 pataas, and mu generate gihapon ang mga avatar maskin 9999 ang gi type
-
-Recommendations:
-- Basin walay unod imong avatar table sa database bantug mu 120 ang avatar pag i refresh, check lang ang avatar table sa database
-- pag mag create ka ug avatar dapat 1 ang id, tas sa avatar count kay kung pila ka avatar imong gusto
+1. i-latest tanan table (detected, users)
+2. sa client/monitor/index.vue, dapat kung wala pa na run ang server sa python kay mag [const isLive = ref(false)]... Kung na run na ang server kay [isLive.value = true], dapat ma watch or onMounted ni every 3000 msecond para dili na nato need irefresh ang page. Kusa na mag display ang camera or mahimog 'No Camera Available.'
+ps: Gibuhat nako ni gabii pero mag hang ang camera pagdugay idk, so gibalik sa nako sa dati.
 

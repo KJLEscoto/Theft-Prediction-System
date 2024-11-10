@@ -33,7 +33,7 @@
       <!-- Notification Details -->
       <section class="flex flex-col gap-1">
         <h1 class="font-medium">
-          <span class="font-bold capitalize dark:text-red-300 text-red-500"
+          <span class="font-bold capitalize text-red-500"
             >POTENTIAL THEFT</span
           >
         </h1>
@@ -58,7 +58,7 @@
         </p> -->
 
         <div
-          class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-300 border dark:border-custom-700"
+          class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-950 border dark:border-custom-700"
         >
           <img
             v-if="notification.screenshot"

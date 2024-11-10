@@ -15,8 +15,9 @@
       In a moment...
     </div>
 
+    <!-- diri isLive (true or false) false -->
     <div v-else>
-      <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="true" />
+      <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="isLive" />
     </div>
 
     <!-- <UButton
@@ -39,6 +40,9 @@ import {
   detected as detectAlias,
   fetchAllNotifications,
 } from "~/assets/js/detected";
+
+
+const isLive = ref(false);
 
 // for toast
 const toast = useToast();
