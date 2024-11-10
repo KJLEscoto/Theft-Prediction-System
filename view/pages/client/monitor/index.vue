@@ -1,8 +1,9 @@
 <template>
   <UseHead title="Monitor - Client" />
 
-  <div class="lg:h-screen h-[700px] w-full p-5">
-    <span
+  <div class="lg:h-screen h-[700px] w-full">
+    <div
+      class="h-screen flex items-center justify-center gap-1"
       v-if="
         !user.role || !['client', 'admin', 'superadmin'].includes(user.role)
       "
@@ -12,11 +13,11 @@
         name="i-heroicons-arrow-path-solid"
       />
       In a moment...
-    </span>
+    </div>
 
-    <span v-else>
+    <div v-else>
       <Camera videoUrl="http://127.0.0.1:5000/video_feed" :isLive="true" />
-    </span>
+    </div>
 
     <!-- <UButton
       label="Alert!"
@@ -34,7 +35,6 @@ definePageMeta({
 import { name, playSound, stopSound } from "~/assets/js/sound";
 import { fetchAvatars } from "~/assets/js/avatar";
 import { user } from "~/assets/js/userLogged";
-import { ref } from "vue";
 import {
   detected as detectAlias,
   fetchAllNotifications,
@@ -163,12 +163,12 @@ const checkForNewEntries = async () => {
     const data = await response.json();
     const latestEntry = data.length ? data[data.length - 1] : null;
     const latestEntryTime = new Date(latestEntry.created_at).toISOString();
-    console.log("hi", data);
+    // console.log("hi", data);
 
     // calls the notification functions if the condiition is met
     if (latestEntryTime > lastCheckTime.value) {
       // sendSms(new Date(latestEntryTime))
-      console.log("hi");
+      // console.log("hi");
       potential_detected();
 
       // updates the latest detected motion

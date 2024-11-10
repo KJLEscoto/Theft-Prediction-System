@@ -277,7 +277,8 @@ const cards = [
 // Assuming `detected` is correctly imported and contains the necessary data
 const items = computed(() => {
   return detected
-    .slice(0, 6)
+    .slice(-6)
+    .reverse()
     .map((notification) => `/Snapshots/${notification.screenshot}`);
 });
 
@@ -288,12 +289,7 @@ const carouselRef = ref();
 
 onMounted(() => {
   fetchAllNotifications();
-  console.log("mao ni mga detected", detected[0].screenshot);
-  console.log("mao ni mga detected", detected[1].screenshot);
-  console.log("mao ni mga detected", detected[2].screenshot);
-  console.log("mao ni mga detected", detected[3].screenshot);
-  console.log("mao ni mga detected", detected[4].screenshot);
-  console.log("mao ni mga detected", detected[5].screenshot);
+
   fetchAvatars();
   fetchMotions();
   motionsCount.value = motions;

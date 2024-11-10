@@ -31,7 +31,7 @@ class NotificationsSeeder extends Seeder
             Notifications::create([
                 'motion_id' => $faker->randomElement($motionIds),
                 'user_id' => $faker->randomElement($clientUsers),
-                'screenshots' => $faker->filePath(), // Fake file path
+                'screenshots' => '1731062006_potential_theft.jpg', // Static file path
                 'created_at' => now(),
             ]);
         }
