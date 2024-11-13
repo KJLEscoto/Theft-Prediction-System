@@ -42,7 +42,6 @@
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps({
   videoUrl: {
     type: String,
@@ -62,7 +61,7 @@ const updateDateTime = () => {
   const now = new Date();
   currentDate.value = now.toLocaleDateString();
   currentTime.value = now.toLocaleTimeString();
-};  
+};
 
 onMounted(() => {
   updateDateTime();

@@ -121,7 +121,7 @@ const q = ref("");
 // Table Headers
 const tableHeaders = [
   { key: "id", label: "#" },
-  { key: "motion_detected", label: "Motion" },
+  // { key: "motion_detected", label: "Motion" },
   { key: "username", label: "Detected By" },
   { key: "date_captured", label: "Date" },
   { key: "action", label: "Action" },

@@ -190,7 +190,7 @@ const deleteAction = async (motion) => {
             icon: "text-custom-900",
           },
         });
-      
+
         navigateTo("/admin/motions");
       }
     } catch (error) {
@@ -218,7 +218,8 @@ watch(q, () => (currentPage.value = 1));
 
 onMounted(async () => {
   const fetchMotions = await loadMotions();
-  selectedMotion.value = fetchMotions || '';  
+  selectedMotion.value = fetchMotions || "";
+  console.log("video path", motions[14].video_path);
 });
 
 const loadMotions = async () => {

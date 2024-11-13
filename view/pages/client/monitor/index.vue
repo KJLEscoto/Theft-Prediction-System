@@ -41,8 +41,7 @@ import {
   fetchAllNotifications,
 } from "~/assets/js/detected";
 
-
-const isLive = ref(false);
+const isLive = ref(true);
 
 // for toast
 const toast = useToast();

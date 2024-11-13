@@ -26,7 +26,7 @@
       v-else
       class="grid grid-cols-1 gap-5 w-full h-auto dark:text-custom-400"
     >
-      <section class="flex flex-col gap-5 items-center">
+      <section class="flex flex-col gap-5">
         <div class="flex items-center w-full gap-5">
           <h1 class="min-w-max">Recently Detected</h1>
           <hr class="border-custom-300 dark:border-custom-500 mx-auto w-full" />
@@ -46,10 +46,10 @@
             color: 'gray',
             icon: 'i-heroicons-arrow-right-20-solid',
           }"
-          class="overflow-hidden w-full h-auto bg-white dark:bg-custom-900 rounded shadow-md mx-auto"
+          class="overflow-hidden w-auto h-auto bg-white rounded shadow-md mx-auto"
           indicators
         >
-          <img :src="item" class="w-[70%] h-full mx-auto" draggable="false" />
+          <img :src="item" class="w-full" draggable="false" />
         </UCarousel>
       </section>
 
@@ -289,12 +289,7 @@ const carouselRef = ref();
 
 onMounted(() => {
   fetchAllNotifications();
-  // console.log("mao ni mga detected", detected[0].screenshot);
-  // console.log("mao ni mga detected", detected[1].screenshot);
-  // console.log("mao ni mga detected", detected[2].screenshot);
-  // console.log("mao ni mga detected", detected[3].screenshot);
-  // console.log("mao ni mga detected", detected[4].screenshot);
-  // console.log("mao ni mga detected", detected[5].screenshot);
+
   fetchAvatars();
   fetchMotions();
   motionsCount.value = motions;
