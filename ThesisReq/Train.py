@@ -7,7 +7,7 @@ from tkinter import filedialog
 import tkinter
 import cv2
 import mediapipe as mp
-import numpy as npz
+import numpy as np
 import csv
 import threading
 import os
@@ -19,6 +19,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
+import mysql.connector
 import time
 ctk.set_appearance_mode('Dark')
 ctk.set_default_color_theme('blue')
@@ -30,17 +31,59 @@ class MotionFeedApp:
     def __init__(self, root):
         self.root = root
         self.file_name_var = tk.StringVar()
+        self.camera_index_var = tk.StringVar(value="0")  # Default to camera 0
         self.training_handler = TrainingHandler()
         self.setup_ui()
 
+    def save_to_database(self, class_name):
+        try:
+            # Establish a connection to the database
+            connection = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='',
+                database='theftpredictiondb'
+            )
+
+            cursor = connection.cursor()
+
+            # Create the insert query
+            query = """
+            INSERT INTO motions (name, description, video_path, threshold)
+            VALUES (%s, %s, %s, %s)
+            """
+
+            # Prepare the data to insert
+            name = class_name
+            description = f"this is the {class_name}"
+            video_path = f"{class_name}mp4"
+            threshold = 95.23
+
+            # Execute the query
+            cursor.execute(query, (name, description, video_path, threshold))
+
+            # Commit the transaction
+            connection.commit()
+
+            print(f"Data for {class_name} saved successfully!")
+
+        except mysql.connector.Error as e:
+            print(f"Error saving to database: {e}")
+
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+
     def setup_ui(self):
         self.root.title('Motion Feed GUI')
-        self.root.geometry('400x400')
+        self.root.geometry('600x400')  # Increased window size for better UI display
         ctk.CTkLabel(self.root, text='Motion Feed', font=('Helvetica', 20)).pack(pady=10)
         ctk.CTkLabel(self.root, text='Choose an option you want to add a motion:').pack(pady=10)
         ctk.CTkButton(self.root, text='Via Live', command=self.show_webcam_gui).pack(pady=10)
-        ctk.CTkButton(self.root, text='Via Folder', command=self.show_folder_gui).pack(pady=10)
-        ctk.CTkButton(self.root, text='Via Image Feed', command=self.show_image_feed_gui).pack(pady=10)  # New button for image feed
+        ctk.CTkButton(self.root, text='Via Video Feed', command=self.show_folder_gui).pack(pady=10)
+        ctk.CTkButton(self.root, text='Via Image Feed', command=self.show_image_feed_gui).pack(pady=10)
 
     def upload_file(self):
         file = filedialog.askopenfile()
@@ -54,10 +97,16 @@ class MotionFeedApp:
         self.root.withdraw()
         webcam_window = ctk.CTkToplevel(self.root)
         webcam_window.title('Webcam Processing')
-        webcam_window.geometry('400x250')
+        webcam_window.geometry('600x400')
         ctk.CTkLabel(webcam_window, text='Class Name:').pack(pady=5)
         file_name_entry = ctk.CTkEntry(webcam_window, textvariable=self.file_name_var)
-        file_name_entry.pack()
+        file_name_entry.pack(pady=5)
+
+        # Add input field for selecting camera index (0 by default)
+        ctk.CTkLabel(webcam_window, text='Camera Index:').pack(pady=5)
+        camera_index_entry = ctk.CTkEntry(webcam_window, textvariable=self.camera_index_var)
+        camera_index_entry.pack(pady=5)
+
         ctk.CTkButton(webcam_window, text='Start Webcam', command=self.start_webcam).pack(pady=20)
         csv_file = 'gesture.csv'
         self.start_training_button = ctk.CTkButton(webcam_window, text='Start Training', state='disabled', command=lambda: self.training_handler.start_training('gesture.csv'))
@@ -70,12 +119,20 @@ class MotionFeedApp:
         self.root.withdraw()
         image_folder_window = ctk.CTkToplevel(self.root)
         image_folder_window.title('Image Folder Selection')
-        image_folder_window.geometry('400x350')
+        image_folder_window.geometry('600x400')
         
         ctk.CTkLabel(image_folder_window, text='Select Image Directory:').pack(pady=5)
         folder_path_var = tk.StringVar()
         folder_entry = ctk.CTkEntry(image_folder_window, textvariable=folder_path_var, state='disabled')
         folder_entry.pack(pady=5)
+        
+        # Show folder path dynamically in the window after selection
+        folder_label = ctk.CTkLabel(image_folder_window, text='Selected Folder Path:')
+        folder_label.pack(pady=5)
+        folder_path_display = ctk.CTkLabel(image_folder_window, textvariable=folder_path_var)
+        folder_path_display.pack(pady=5)
+
+        # Browse button that updates the folder path in the folder_path_var
         ctk.CTkButton(image_folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var)).pack(pady=5)
         
         ctk.CTkLabel(image_folder_window, text='Class Name:').pack(pady=5)
@@ -94,26 +151,31 @@ class MotionFeedApp:
 
     def start_webcam(self):
         class_name = self.file_name_var.get()
+        camera_index = int(self.camera_index_var.get())  # Get the camera index from user input
         csv_file = 'gesture.csv'
         if class_name:
             self.root.withdraw()
-            threading.Thread(target=self.main, args=(class_name, csv_file)).start()
+            threading.Thread(target=self.main, args=(class_name, csv_file, camera_index)).start()
+            # self.save_to_database(class_name)  # Save data to database here
         else:
             msgbox.showinfo(title='Alert', message=f'Please enter a class name before starting')
             print('Please enter a class name before starting.')
 
+
     def start_image_processing(self, folder_path, class_name):
         csv_file = 'gesture.csv'
         if folder_path and class_name:
-            processor = ImagePoseProcessor()
+            processor = ImagePoseProcessor(self.start_training_button)  # Pass the button reference
             threading.Thread(target=processor.process_images_from_folder, args=(folder_path, class_name, csv_file)).start()
-            self.start_training_button.configure(state='normal')
+            # self.save_to_database(class_name)  # Save data to database here
         else:
             msgbox.showinfo(title='Alert', message=f'Please provide both an image directory and a class name.')
             print('Please provide both an image directory and a class name.')
 
-    def main(self, class_name, csv_file):
-        cap = cv2.VideoCapture(0)
+
+
+    def main(self, class_name, csv_file, camera_index):
+        cap = cv2.VideoCapture(camera_index)  # Use the specified camera index
         self.setup_window('Processing Webcam Feed')
         with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
             while cap.isOpened():
@@ -180,20 +242,34 @@ class MotionFeedApp:
         self.root.withdraw()
         folder_window = ctk.CTkToplevel(self.root)
         folder_window.title('Folder Selection')
-        folder_window.geometry('400x350')
+        folder_window.geometry('600x400')  # Increased size for folder selection window
         ctk.CTkLabel(folder_window, text='Select Video Directory:').pack(pady=5)
+        
         folder_path_var = tk.StringVar()
         folder_entry = ctk.CTkEntry(folder_window, textvariable=folder_path_var, state='disabled')
         folder_entry.pack(pady=5)
+        
+        # Show folder path dynamically in the window after selection
+        folder_label = ctk.CTkLabel(folder_window, text='Selected Folder Path:')
+        folder_label.pack(pady=5)
+        folder_path_display = ctk.CTkLabel(folder_window, textvariable=folder_path_var)
+        folder_path_display.pack(pady=5)
+
         ctk.CTkButton(folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var)).pack(pady=5)
+        
         ctk.CTkLabel(folder_window, text='Class Name:').pack(pady=5)
         class_name_var = tk.StringVar()
         class_name_entry = ctk.CTkEntry(folder_window, textvariable=class_name_var)
         class_name_entry.pack(pady=5)
-        ctk.CTkButton(folder_window, text='Start Processing', command=lambda: self.start_video_processing(folder_path_var.get(), class_name_var.get(), self.start_training_button)).pack(pady=20)
+        
+        # Start Processing button (will be dynamically enabled)
+        self.start_processing_button = ctk.CTkButton(folder_window, text='Start Processing', state='normal', command=lambda: self.start_video_processing(folder_path_var.get(), class_name_var.get(), folder_window))
+        self.start_processing_button.pack(pady=5)
 
+        # Start Training button (initially disabled)
         self.start_training_button = ctk.CTkButton(folder_window, text='Start Training', state='disabled', command=lambda: self.training_handler.start_training('gesture.csv'))
-        self.start_training_button.pack(pady=10)
+        self.start_training_button.pack(pady=20)
+
         folder_window.focus_set()
         folder_window.wait_window()
         self.root.deiconify()
@@ -204,14 +280,24 @@ class MotionFeedApp:
         if folder_path:
             folder_path_var.set(folder_path)
 
-    def start_video_processing(self, video_dir, class_name, start_training_button):
+    def start_video_processing(self, video_dir, class_name, folder_window):
         csv_file = 'gesture.csv'
         if video_dir and class_name:
-            processor = VideoPoseProcessor(video_dir, class_name, csv_file, start_training_button)
-            threading.Thread(target=processor.process_videos).start()
+            # Check for video files when 'Start Processing' is clicked
+            video_files = [f for f in os.listdir(video_dir) if f.lower().endswith(('.mp4', '.avi'))]
+            if video_files:
+                # If video files are found, enable the Start Training button
+                self.start_training_button.configure(state='normal')
+                # Process the videos after enabling the training button
+                processor = VideoPoseProcessor(video_dir, class_name, csv_file, self.start_training_button)
+                threading.Thread(target=processor.process_videos).start()
+                # self.save_to_database(class_name)  # Save data to database here
+            else:
+                msgbox.showinfo(title='Alert', message=f'No video files found in the folder.')
         else:
             msgbox.showinfo(title='Alert', message=f'Please provide both a video directory and a class name.')
             print('Please provide both a video directory and a class name.')
+
 
 
     def close_folder_gui(self, folder_window):
@@ -248,7 +334,9 @@ class TrainingHandler:
         self.root.withdraw()
         self.results_window = ctk.CTkToplevel()
         self.results_window.title('Training Results')
-        self.results_window.geometry('300x300')
+        self.results_window.geometry('300x400')
+        self.results_window.attributes('-topmost', 1)  # Ensure the window stays on top
+
         for algo, score in results.items():
             result_text = f'{algo}: {score:.2f}'
             ctk.CTkLabel(self.results_window, text=result_text).pack(pady=5)
@@ -336,14 +424,19 @@ class VideoPoseProcessor:
 
 
 class ImagePoseProcessor:
-    def __init__(self):
+    def __init__(self, start_training_button):
         self.mp_holistic = mp.solutions.holistic
         self.mp_drawing = mp.solutions.drawing_utils
+        self.start_training_button = start_training_button  # Store the reference to the button
 
     def process_images_from_folder(self, folder_path, class_name, csv_file):
         image_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        
+        # Check if there are no image files
         if not image_files:
+            msgbox.showinfo(title='Alert', message=f'No image files found in the folder.')
             print("No image files found in the folder.")
+            self.start_training_button.configure(state='disabled')  # Disable start training button
             return
         
         with self.mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
@@ -370,6 +463,9 @@ class ImagePoseProcessor:
 
         cv2.destroyAllWindows()
         print("Finished processing images.")
+
+        # After processing, enable the 'Start Training' button
+        self.start_training_button.configure(state='normal')
 
     def draw_landmarks(self, image, results):
         """ Draw pose landmarks on the image """

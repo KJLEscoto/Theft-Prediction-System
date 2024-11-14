@@ -21,10 +21,13 @@ model2 = None
 detector = None
 
 class BodyLanguageDetector:
-    def __init__(self, threshold, model1, model2, max_movements=3, buffer_size=50):
+    def __init__(self, threshold, model1, model2, snapshot_dir, max_movements=3, buffer_size=50, camera_index=0):
+        self.camera_index = camera_index  # Store the camera index
         self.threshold = threshold
+        self.motion_buffer = []  # Buffer for detected motions
         self.model1 = model1
         self.model2 = model2
+        self.notification_id = None  # Ensure notification_id is always defined
         self.max_movements = max_movements
         self.movement_buffer = collections.deque(maxlen=buffer_size)
 
@@ -34,8 +37,14 @@ class BodyLanguageDetector:
         self.concealing_detected = False
         self.theft_warning_active = False
         self.theft_warning_start_time = None
+        self.theft_detected = False  # New flag to confirm theft
         self.current_action = "None"
         self.current_prob = 0.0
+        
+        # Flags to track if snapshots have already been saved for each action
+        self.looking_around_saved = False
+        self.reaching_saved = False
+        self.concealing_saved = False
 
         # Mediapipe setup for drawing
         self.mp_drawing = mp.solutions.drawing_utils
@@ -45,7 +54,7 @@ class BodyLanguageDetector:
         self.db_connection = self.connect_to_database()
 
         # Set the directory for saving snapshots
-        self.snapshot_dir = r'C:\Users\Kent\Desktop\Coding Portfolio\FULL STACK DEV\Thesis_v3\view\public\Snapshots'
+        self.snapshot_dir = snapshot_dir
         os.makedirs(self.snapshot_dir, exist_ok=True)  # Ensure the directory exists
 
     def connect_to_database(self):
@@ -56,14 +65,41 @@ class BodyLanguageDetector:
             database='theftpredictiondb'
         )
 
-    def save_snapshot_to_db(self, file_path, name, user_id):
-        # Extract only the file name from the full path
-        file_name = os.path.basename(file_path)
-        cursor = self.db_connection.cursor()
-        query = "INSERT INTO notifications (screenshots, motion_id, user_id) VALUES (%s, %s, %s)"
-        cursor.execute(query, (file_name, name, user_id))
-        self.db_connection.commit()
-        cursor.close()
+    def save_snapshot_to_db(self, file_path, user_id):
+        try:
+            file_name = os.path.basename(file_path)
+            cursor = self.db_connection.cursor()
+
+            # Insert into notifications, setting motion_id to NULL
+            query = "INSERT INTO notifications (user_id, screenshots) VALUES (%s, %s)"
+            cursor.execute(query, (user_id, file_name))
+            self.db_connection.commit()
+            
+            # Get the inserted notification's ID
+            notification_id = cursor.lastrowid
+            return notification_id
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+            return None
+        finally:
+            cursor.close()
+
+    def save_motion_snapshot_to_db(self, name, file_path, threshold, notification_id):
+        try:
+            # Multiply the threshold by 100 before saving
+            threshold *= 100
+            file_name = os.path.basename(file_path)
+            cursor = self.db_connection.cursor()
+
+            # Insert motion and link it to the notification_id
+            query = "INSERT INTO motions (name, notification_id, video_path, threshold) VALUES (%s, %s, %s, %s)"
+            cursor.execute(query, (name, notification_id, file_name, float(threshold)))
+            self.db_connection.commit()
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+        finally:
+            cursor.close()
+
 
     def save_snapshot(self, image, action_type):
         file_name = f"{int(time.time())}_{action_type}.jpg"  # Create a unique file name
@@ -77,86 +113,125 @@ class BodyLanguageDetector:
         results = self.mp_holistic.process(image_rgb)
         return cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR), results
 
-    def update_movement_buffer(self, action, frame):
+    # def update_movement_buffer(self, action, frame):
+    #     if action in ["left", "right"]:
+    #         self.movement_buffer.append(action)
+    #         changes = sum(1 for i in range(1, len(self.movement_buffer)) if self.movement_buffer[i] != self.movement_buffer[i - 1])
+    #         if changes >= self.max_movements:
+    #             self.looking_around_count = 1  # "Looking around" detected
+
+
+    def update_movement_buffer(self, action, prob, frame):
         if action in ["left", "right"]:
-            self.movement_buffer.append(action)
-            changes = sum(1 for i in range(1, len(self.movement_buffer)) if self.movement_buffer[i] != self.movement_buffer[i - 1])
+            self.movement_buffer.append((action, prob))  # Store action and probability
+            changes = sum(1 for i in range(1, len(self.movement_buffer)) if self.movement_buffer[i][0] != self.movement_buffer[i - 1][0])
+            
             if changes >= self.max_movements:
                 self.looking_around_count = 1  # "Looking around" detected
-                # file_path = self.save_snapshot(frame, "looking_around")  # Take snapshot and save path
-                # self.save_snapshot_to_db(file_path, 1, 3)  # Save path to DB
+                avg_prob = np.mean([item[1] for item in self.movement_buffer])  # Calculate average probability
+
+                if not self.looking_around_saved:
+                    self.motion_buffer.append(("looking_around", frame, avg_prob))  # Buffer for later saving
+                    self.looking_around_saved = True  # Mark as detected and buffered
+
+
+    def save_potential_theft(self, frame):
+        # Save potential theft snapshot
+        file_path = self.save_snapshot(frame, "potential_theft")
+        self.notification_id = self.save_snapshot_to_db(file_path, user_id=3)  # Create notification
+
+        if self.notification_id:
+            self.save_buffered_motions()  # Save all motions after notification_id is available
+
+
+    def save_buffered_motions(self):
+        for motion_type, frame, prob in self.motion_buffer:
+            file_path = self.save_snapshot(frame, motion_type)
+            self.save_motion_snapshot_to_db(motion_type, file_path, prob, self.notification_id)
+        self.motion_buffer.clear()  # Clear the buffer after saving
+
 
     def predict_pose(self, results, frame):
         if results.pose_landmarks:
             pose_row = list(np.array([[lm.x, lm.y, lm.z, lm.visibility] for lm in results.pose_landmarks.landmark]).flatten())
             X = pd.DataFrame([pose_row])
 
-            # Determine which model to use based on "looking around" state
-            if self.looking_around_count == 0:  # Use Head pose model if not looking around
+            if self.looking_around_count == 0:
                 self.current_action = self.model1.predict(X)[0]
                 self.current_prob = self.model1.predict_proba(X)[0].max()
                 if self.current_prob >= self.threshold:
-                    self.update_movement_buffer(self.current_action, frame)  # Pass the frame for snapshot
-                else:
-                    self.current_action = "None"
-                    self.current_prob = 0.0
-            else:  # Use Gesture model if looking around
+                    self.update_movement_buffer(self.current_action, self.current_prob, frame)
+            else:
                 self.current_action = self.model2.predict(X)[0]
                 self.current_prob = self.model2.predict_proba(X)[0].max()
                 if self.current_prob >= 0.77:
-                    if self.current_action == "reach":
+                    if self.current_action == "reach" and not self.reaching_detected:
                         self.reaching_detected = True
-                        # file_path = self.save_snapshot(frame, "reaching")  # Take snapshot and save path
-                        # self.save_snapshot_to_db(file_path, 2, 3)  # Save path to DB
-                    elif self.current_action == "conceal":
+                        self.motion_buffer.append(("reaching", frame, self.current_prob))
+
+                    elif self.current_action == "conceal" and not self.concealing_detected:
                         if self.reaching_detected:
                             self.concealing_detected = True
-                        # file_path = self.save_snapshot(frame, "conceal")  # Take snapshot and save path
-                        # self.save_snapshot_to_db(file_path, 3, 3)  # Save path to DB
-                else:
-                    self.current_action = "None"
-                    self.current_prob = 0.0
+                            self.motion_buffer.append(("concealing", frame, self.current_prob))
+
+            # Check for potential theft
+            if self.looking_around_count == 1 and self.reaching_detected and self.concealing_detected:
+                if not self.theft_detected:
+                    self.theft_detected = True
+                    self.save_potential_theft(frame)
+
 
     def display_results(self, image, results):
-        # Draw body landmarks and connections
         if results.pose_landmarks:
             self.mp_drawing.draw_landmarks(image, results.pose_landmarks, mp.solutions.holistic.POSE_CONNECTIONS)
 
-            left_ear = results.pose_landmarks.landmark[mp.solutions.holistic.PoseLandmark.LEFT_EAR]
-            left_ear_pos = (int(left_ear.x * image.shape[1]), int(left_ear.y * image.shape[0]))
+            # Status text display
+            status_text = [
+                f"Looking Around Detected: {'Yes' if self.looking_around_count else 'No'}",
+                f"Reaching Detected: {'Yes' if self.reaching_detected else 'No'}",
+                f"Concealing Detected: {'Yes' if self.concealing_detected else 'No'}"
+            ]
 
-            action_text = f"{self.current_action} ({self.current_prob:.2f})"
-            cv2.putText(image, action_text, (left_ear_pos[0] + 10, left_ear_pos[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            for i, text in enumerate(status_text):
+                cv2.putText(image, text, (10, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
-        # Status text display at the left side of the frame
-        status_text = [
-            f"Looking Around Detected: {'Yes' if self.looking_around_count else 'No'}",
-            f"Reaching Detected: {'Yes' if self.reaching_detected else 'No'}",
-            f"Concealing Detected: {'Yes' if self.concealing_detected else 'No'}"
-        ]
+            # Trigger potential theft logic when all actions are detected
+            if self.looking_around_count == 1 and self.reaching_detected and self.concealing_detected:
+                if not self.theft_warning_active:
+                    self.theft_warning_active = True
+                    self.theft_warning_start_time = time.time()
 
-        for i, text in enumerate(status_text):
-            cv2.putText(image, text, (10, 30 + i * 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+                    # Save potential theft notification
+                    if not self.notification_id:
+                        file_path = self.save_snapshot(image, "potential_theft")
+                        self.notification_id = self.save_snapshot_to_db(file_path, user_id=3)
 
-        # Check and display potential theft warning
-        if self.looking_around_count == 1 and self.reaching_detected and self.concealing_detected:
-            if not self.theft_warning_active:
-                self.theft_warning_active = True
-                self.theft_warning_start_time = time.time()
-                file_path = self.save_snapshot(image, "potential_theft")  # Take snapshot for potential theft
-                self.save_snapshot_to_db(file_path, 1, 3)  # Save path to DB
-            # if self.theft_warning_active:
-            #     cv2.putText(image, 'POTENTIAL THEFT DETECTED', (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
 
-            if time.time() - self.theft_warning_start_time >= 2:  # Show warning for 2 seconds
-                self.theft_warning_active = False
-                self.looking_around_count = 0
-                self.reaching_detected = False
-                self.concealing_detected = False
-                self.movement_buffer.clear()
+                # Reset flags after 2 seconds
+                if time.time() - self.theft_warning_start_time >= 2:
+                    self.reset_detection_flags()
+
+
+
+    def reset_detection_flags(self):
+        self.theft_warning_active = False
+        self.notification_id = None  # Clear for next cycle
+        self.looking_around_count = 0
+        self.reaching_detected = False
+        self.concealing_detected = False
+        self.looking_around_saved = False
+        self.reaching_saved = False
+        self.concealing_saved = False
+        self.motion_save_lock = False
+        self.theft_saved = False
+        self.theft_detected = False
+        self.motion_buffer.clear()  # Clear buffered motions
+        self.movement_buffer.clear()
+
+   
 
     def generate_frames(self):
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(self.camera_index)  # Use dynamic camera index
         try:
             while cap.isOpened():
                 ret, frame = cap.read()
@@ -174,8 +249,6 @@ class BodyLanguageDetector:
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         finally:
             cap.release()
-            # cv2.destroyAllWindows()
-            # self.db_connection.close()
 
 @app.route('/video_feed')
 def video_feed():
@@ -184,16 +257,49 @@ def video_feed():
 def start_flask_server():
     app.run(host='0.0.0.0', port=5000, debug=False)
 
+# Modify the start_server method to pass the snapshot directory
 def start_server():
+    global detector  # Declare the detector variable as global at the start of the method
+    
     if model1 is None or model2 is None:
         messagebox.showwarning("Warning", "Please load both models before starting the server.")
         return
-    global detector
-    detector = BodyLanguageDetector(0.7, model1, model2)
+    
+    snapshot_dir = detector.snapshot_dir  # Use the dynamic directory, after it's selected
+    if not snapshot_dir:  # Check if a directory is selected
+        messagebox.showwarning("Warning", "Please select a snapshot folder first.")
+        return
+    
+    camera_index = int(camera_index_entry.get())
+    detector = BodyLanguageDetector(0.7, model1, model2, snapshot_dir)  # Initialize detector
     threading.Thread(target=start_flask_server, daemon=True).start()
-        # Minimize the GUI window
+    
+    # Minimize the GUI window
     root.iconify()
     messagebox.showinfo("Info", "Server started on http://localhost:5000/video_feed")
+
+# GUI method to select snapshot directory
+def select_snapshot_directory():
+    global detector  # Declare the detector variable as global
+    
+    snapshot_dir = filedialog.askdirectory(title="Select Snapshot Folder")
+    if snapshot_dir:
+        if model1 is None or model2 is None:
+            messagebox.showwarning("Warning", "Please load both models before selecting a snapshot folder.")
+            return
+        
+        # Initialize the detector object if it's not already initialized
+        if detector is None:
+            camera_index = int(camera_index_entry.get())
+            detector = BodyLanguageDetector(0.7, model1, model2, snapshot_dir)  # Initialize detector
+
+        detector.snapshot_dir = snapshot_dir  # Set the new snapshot directory
+        messagebox.showinfo("Info", f"Snapshot directory set to: {snapshot_dir}")
+    else:
+        messagebox.showwarning("Warning", "No directory selected!")
+
+
+    
 
 def load_head_motion_model():
     global model1
@@ -218,7 +324,15 @@ ctk.set_default_color_theme('blue')
 # GUI layout
 root = ctk.CTk()
 root.title("Body Language Detection")
-root.geometry("400x300")
+root.geometry("400x400")
+
+# Camera input field
+camera_index_label = ctk.CTkLabel(root, text="Enter Camera Index:")
+camera_index_label.pack(pady=10)
+
+camera_index_entry = ctk.CTkEntry(root)
+camera_index_entry.pack(pady=10)
+camera_index_entry.insert(0, "0")  # Default to 0 if no input
 
 # Buttons
 head_motion_btn = ctk.CTkButton(root, text="Load Head Motion Model", command=load_head_motion_model)
@@ -227,8 +341,11 @@ head_motion_btn.pack(pady=20)
 gesture_motion_btn = ctk.CTkButton(root, text="Load Gesture Model", command=load_gesture_model)
 gesture_motion_btn.pack(pady=20)
 
+# Add a button to select the directory for snapshots
+select_dir_btn = ctk.CTkButton(root, text="Select Snapshot Folder", command=select_snapshot_directory)
+select_dir_btn.pack(pady=10)
+
 start_btn = ctk.CTkButton(root, text="Start", command=start_server)
 start_btn.pack(pady=20)
 
 root.mainloop()
-
