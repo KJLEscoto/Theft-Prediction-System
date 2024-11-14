@@ -38,7 +38,9 @@
             :key="index"
             class="text-red-500 dark:text-red-400 text-lg font-bold text-center truncate"
           >
-            {{ error }}
+          <UTooltip class="truncate" :text="error" :popper="{ arrow: true, placement: 'right' }" :ui="{ base: 'text-ellipsis text-wrap text-start h-auto'  }">
+            <span>{{ error }}</span>
+          </UTooltip>
           </li>
         </ul>
       </div>
@@ -82,9 +84,6 @@
             type="text"
             color="gray"
             size="md"
-            :trailing-icon="
-              error ? 'i-heroicons-exclamation-triangle-20-solid' : ''
-            "
             :ui="{
               rounded: 'rounded',
               color: error

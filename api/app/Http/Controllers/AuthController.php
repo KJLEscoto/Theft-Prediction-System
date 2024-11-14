@@ -34,14 +34,14 @@ class AuthController extends Controller
         // Check if the user's status is inactive
         if ($user->status === 'inactive') {
             throw ValidationValidationException::withMessages([
-                'username' => ['Your account is inactive. Please contact support.'],
+                'username' => ['This account is inactive.'],
             ]);
         }
 
         // Check if the user is admin or superadmin and block access
         if (in_array($user->role, ['admin', 'superadmin'])) {
             throw ValidationValidationException::withMessages([
-                'username' => ['Access denied. Clients only.'],
+                'username' => ['Access denied. Client only.'],
             ]);
         }
 
@@ -89,7 +89,7 @@ class AuthController extends Controller
         // Check if the user exists and the password matches
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.'
+                'message' => 'Invalid login credentials.'
             ], 401); // Return 401 Unauthorized
         }
 
@@ -125,21 +125,21 @@ class AuthController extends Controller
         // Check if the user exists (without checking the password)
         if (!$user) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.'
+                'message' => 'Invalid login credentials.'
             ], 401); // Return 401 Unauthorized
         }
 
         // Check if the user's status is inactive
         if ($user->status === 'inactive') {
             return response()->json([
-                'message' => 'Your account is inactive. Please contact support.'
+                'message' => 'This account is inactive.'
             ], 403); // Return 403 Forbidden for inactive status
         }
 
         // Check if the user is an admin or superadmin
         if (!in_array($user->role, ['admin', 'superadmin'])) {
             return response()->json([
-                'message' => 'Access denied. Admins only.'
+                'message' => 'Access denied. Admin only.'
             ], 403); // Return 403 Forbidden
         }
 

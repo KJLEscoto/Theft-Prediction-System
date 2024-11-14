@@ -72,6 +72,12 @@
         </div>
       </template>
 
+      <template #motion_detected-data>
+        <div>
+          POTENTIAL THEFT DETECTED
+        </div>
+      </template>
+
       <!-- Table ID Column -->
       <template #id-data="{ index }">
         <span>{{ (currentPage - 1) * pageCount + index + 1 }}</span>
@@ -129,7 +135,7 @@ const q = ref("");
 const tableHeaders = [
   { key: "id", label: "#" },
   { key: "date_captured", label: "Date" },
-  { key: "motion_detected", label: "Motion Detected" },
+  { key: "motion_detected", label: "Detected" },
   { key: "action", label: "Action" },
 ];
 

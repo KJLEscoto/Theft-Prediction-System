@@ -73,6 +73,19 @@
         <span>{{ (currentPage - 1) * pageCount + index + 1 }}</span>
       </template>
 
+      <template #threshold-data="{ row }">
+        <div>
+          <span
+            v-if="row.threshold <= 74.99"
+            class="text-green-500 font-bold"
+            >{{ row.threshold }}%</span
+          >
+          <span v-else class="text-red-500 font-bold"
+            >{{ row.threshold }}%</span
+          >
+      </div>
+      </template>
+
       <!-- Custom Template for Actions -->
       <template #action-data="{ row }">
         <div class="flex justify-start gap-2">
