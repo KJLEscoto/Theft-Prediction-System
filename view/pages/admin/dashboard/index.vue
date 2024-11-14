@@ -46,10 +46,10 @@
             color: 'gray',
             icon: 'i-heroicons-arrow-right-20-solid',
           }"
-          class="overflow-hidden w-auto h-auto bg-white rounded shadow-md mx-auto"
+          class="overflow-hidden w-full h-auto bg-custom-100 dark:bg-custom-900 rounded shadow-md mx-auto"
           indicators
         >
-          <img :src="item" class="w-full" draggable="false" />
+          <img :src="item" class="w-[70%] h-auto mx-auto" draggable="false" />
         </UCarousel>
       </section>
 

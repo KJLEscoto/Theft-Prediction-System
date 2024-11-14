@@ -83,7 +83,7 @@
               @click="viewAction(row)"
             />
           </UTooltip>
-          <UTooltip
+          <!-- <UTooltip
             text="Delete"
             :popper="{ arrow: true, placement: 'bottom' }"
           >
@@ -92,7 +92,7 @@
               class="text-xl hover:opacity-50 text-red-500"
               @click="deleteAction(row)"
             />
-          </UTooltip>
+          </UTooltip> -->
         </div>
       </template>
     </UTable>

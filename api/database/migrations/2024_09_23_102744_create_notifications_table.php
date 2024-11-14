@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,15 +14,19 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('motion_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->string('screenshots');
-            $table->timestamps();
+            $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
 
-            // Set foreign keys
-            $table->foreign('motion_id')->references('id')->on('motions')->onDelete('cascade');
+            // Foreign key
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        // Add the foreign key for notification_id in motions table
+        Schema::table('motions', function (Blueprint $table) {
+            $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade');
         });
     }
 
@@ -30,8 +35,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('motions', function (Blueprint $table) {
+            $table->dropForeign(['notification_id']);
+        });
+
         Schema::table('notifications', function (Blueprint $table) {
-            $table->dropForeign(['motion_id']);
             $table->dropForeign(['user_id']);
         });
 

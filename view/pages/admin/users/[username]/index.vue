@@ -238,9 +238,7 @@
         <UIcon name="i-lucide-book-open-text" class="text-xl" />
         <h1 class="text-xl font-bold">Notifications Log</h1>
       </div>
-      <p class="mb-0 lg:-mb-6">
-        These are the list of motions detected by this user.
-      </p>
+      <p class="">These are the list of motions detected by this user.</p>
       <TableNotifications />
     </section>
   </div>

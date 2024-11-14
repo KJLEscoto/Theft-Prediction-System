@@ -46,7 +46,7 @@ export async function fetchAvatars() {
       items.value = data[0].avatar_count;
     }
   } catch (error) {
-    console.error("Error fetching notifications:", error.message);
+    console.error("Error fetching avatars:", error.message);
   }
 }
 export { items, avatars, totalItems, getSpecificAvatar };

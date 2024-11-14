@@ -6,11 +6,8 @@ export const notifications = reactive([]); // Start with an empty array
 // Initialize the motion object
 const mapNotificationData = (data) => {
   return {
-    motion_detected: data.motion.name,
     username: data.user.username,
-    description: data.motion.description,
     screenshot: data.screenshots,
-    threshold: data.motion.threshold,
     date_captured: formatDate(data.created_at),
     deleted_at: data.deleted_at,
     name: `${data.user.first_name} ${

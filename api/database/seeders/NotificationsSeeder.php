@@ -18,22 +18,6 @@ class NotificationsSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = Faker::create();
-
-        // Fetch the available motion IDs (assuming you have 3)
-        $motionIds = Motions::pluck('id')->take(3)->toArray();
-
-        // Fetch client users only
-        $clientUsers = User::where('role', 'client')->pluck('id')->toArray();
-
-        // Generate 30 notification records
-        for ($i = 0; $i < 30; $i++) {
-            Notifications::create([
-                'motion_id' => $faker->randomElement($motionIds),
-                'user_id' => $faker->randomElement($clientUsers),
-                'screenshots' => '1731062006_potential_theft.jpg', // Static file path
-                'created_at' => now(),
-            ]);
-        }
+        
     }
 }

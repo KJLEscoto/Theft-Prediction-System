@@ -15,10 +15,11 @@ return new class extends Migration
         Schema::create('motions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->unsignedBigInteger('notification_id')->nullable(); // Allow null for deferred FK
             $table->string('video_path');
-            $table->decimal('threshold', 5, 2); // Set precision and scale
+            $table->decimal('threshold', 5, 2);
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->softDeletes();
         });
     }

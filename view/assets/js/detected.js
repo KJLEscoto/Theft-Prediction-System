@@ -6,11 +6,8 @@ export const detected = reactive([]);
 const mapNotificationData = (data) => {
   return {
     id: data.id,
-    motion_detected: data.motion.name,
     username: data.user.username,
-    description: data.motion.description,
     screenshot: data.screenshots,
-    threshold: data.motion.threshold,
     date_captured: formatDate(data.created_at),
     deleted_at: data.deleted_at,
     name: `${data.user.first_name} ${
@@ -43,6 +40,6 @@ export async function fetchAllNotifications() {
       detected.push(mapNotificationData(item)); // Use push to add new notifications
     });
   } catch (error) {
-    console.error("Error fetching notifications:", error.message);
+    console.error("Error fetching detected:", error.message);
   }
 }

@@ -789,7 +789,7 @@ function resetAvatar() {
 
 const links = [
   {
-    label: "Users",
+    label: "List of Users",
     to: "/admin/users",
   },
   {

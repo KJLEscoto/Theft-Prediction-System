@@ -61,7 +61,6 @@ class DatabaseSeeder extends Seeder
         
         User::factory(10)->create();
 
-        $this->call(MotionsSeeder::class);
         // $this->call(NotificationsSeeder::class);
         $this->call(AvatarSeeder::class);
     }
