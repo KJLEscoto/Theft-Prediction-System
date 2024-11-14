@@ -58,3 +58,5 @@ Route::middleware('auth:sanctum')->put('/user/contact/{contact_id}', [ContactCon
 Route::middleware('auth:sanctum')->get('/active', [AuthController::class, 'getActive']);
 Route::get('/inactive', [AuthController::class, 'getInactive']);
 
+Route::get('notification/motions/{id}', [NotificationsController::class, 'getSpecificMotions']);
+

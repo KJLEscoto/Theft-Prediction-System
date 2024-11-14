@@ -10,19 +10,20 @@ class Notifications extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'notifications';
+
     protected $fillable = [
-        'motion_id',
         'user_id',
         'screenshots',
     ];
 
-    public function motion()
-    {
-        return $this->belongsTo(Motions::class, 'motion_id'); // Adjust the foreign key if needed
-    }
-
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function motions()
+    {
+        return $this->hasMany(Motions::class, 'notification_id');
     }
 }

@@ -14,8 +14,13 @@ class Motions extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'notification_id',
         'video_path',
-        'threshold'
+        'threshold',
     ];
+
+    public function notification()
+    {
+        return $this->belongsTo(Notifications::class, 'notification_id');
+    }
 }

@@ -147,7 +147,7 @@ const paginatedData = computed(() => {
 // Open Modal and pass selected motion
 const viewAction = (notification) => {
   const modal = useModal();
-  modal.open(ModalViewNotifications, { notification }); // Pass motion as prop
+  modal.open(ModalViewNotifications, { notification }); // Pass notification correctly
 };
 
 // Update Page on Pagination

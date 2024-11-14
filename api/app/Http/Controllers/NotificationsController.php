@@ -16,12 +16,8 @@ class NotificationsController extends Controller
      */
     public function index()
     {
-        // Return all notifications with their related motion and user, including soft-deleted ones
-        return Notifications::withTrashed()->with(['motion' => function ($query) {
-            $query->withTrashed();
-        }, 'user' => function ($query) {
-            $query->withTrashed();
-        }])->get();
+        $notifications = Notifications::with(['motions', 'user'])->get();
+        return response()->json($notifications);
     }
 
 
@@ -76,34 +72,33 @@ class NotificationsController extends Controller
 
 
     public function getSpecificNotification($username)
-    {
-        // Find the user by the provided username
-        $user = User::where('username', $username)->first();
+{
+    // Find the user by the provided username
+    $user = User::where('username', $username)->first();
 
-        // Check if the user exists
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // Get the user's ID
-        $userId = $user->id;
-
-        // Fetch the notifications for the user by their ID, sorted by 'created_at' in descending order
-        $notifications = Notifications::with([
-            'motion' => function ($query) {
-                $query->withTrashed(); // Include soft-deleted motions
-            },
-            'user' => function ($query) {
-                $query->withTrashed(); // Include soft-deleted users
-            }
-        ])
-        ->where('user_id', $userId)
-        ->orderBy('created_at', 'desc') // Sort by created_at descending
-        ->get();
-
-        // Return the notifications as a JSON response
-        return response()->json($notifications);
+    // Check if the user exists
+    if (!$user) {
+        return response()->json(['message' => 'User not found'], 404);
     }
+
+    // Get the user's ID
+    $userId = $user->id;
+
+    // Fetch the notifications for the user by their ID, sorted by 'created_at' in descending order
+    $notifications = Notifications::with([
+        'motions' => function ($query) {
+            $query->withTrashed(); // Include soft-deleted motions
+        },
+        'user'
+    ])
+    ->where('user_id', $userId)
+    ->orderBy('created_at', 'desc') // Sort by created_at descending
+    ->get();
+
+    // Return the notifications as a JSON response
+    return response()->json($notifications);
+}
+
 
     public function detectedBy($id)
     {
@@ -127,5 +122,15 @@ class NotificationsController extends Controller
         return response()->json(['message' => 'Notification updated successfully', 'notification' => $notification]);
     }
 
+    public function getSpecificMotions($id)
+    {
+        $notification = Notifications::with('motions')->find($id);
+
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found'], 404);
+        }
+
+        return response()->json($notification->motions);
+    }
 
 }

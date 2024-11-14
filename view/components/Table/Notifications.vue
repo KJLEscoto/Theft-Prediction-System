@@ -73,9 +73,7 @@
       </template>
 
       <template #motion_detected-data>
-        <div>
-          POTENTIAL THEFT DETECTED
-        </div>
+        <div>POTENTIAL THEFT DETECTED</div>
       </template>
 
       <!-- Table ID Column -->

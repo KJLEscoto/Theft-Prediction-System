@@ -13,10 +13,16 @@ const mapNotificationData = (data) => {
     name: `${data.user.first_name} ${
       data.user.middle_initial ? data.user.middle_initial + ". " : ""
     }${data.user.last_name}`,
+    motions: data.motions.map((motion) => ({
+      id: motion.id,
+      name: motion.name,
+      threshold: motion.threshold,
+      img: `/Snapshots/${motion.video_path}`,
+    })),
   };
 };
 
-// fetch all notifications
+// Fetch all notifications
 export async function fetchAllNotifications() {
   try {
     const response = await fetch(`http://127.0.0.1:8000/api/notifications`, {
@@ -25,19 +31,21 @@ export async function fetchAllNotifications() {
         Authorization: "Bearer " + localStorage.getItem("_token"), // Use 'Bearer' prefix for token
       },
     });
+
     if (!response.ok) {
       throw new Error(`No data found in response: ${response.statusText}`);
     }
 
     const data = await response.json();
     console.log("Fetched user data:", data);
-    // Clear existing notifications (if needed)
+
+    // Clear existing notifications
     detected.splice(0, detected.length);
 
     // Populate notifications based on fetched data
     data.forEach((item) => {
-      console.log("pushing: ", item);
-      detected.push(mapNotificationData(item)); // Use push to add new notifications
+      console.log("Mapping and pushing data:", item);
+      detected.push(mapNotificationData(item));
     });
   } catch (error) {
     console.error("Error fetching detected:", error.message);
