@@ -35,7 +35,7 @@
         <p class="text-sm font-medium">
           Threshold:
           <span
-            v-if="selectedMotion.threshold <= 74"
+            v-if="selectedMotion.threshold <= 74.99"
             class="text-green-500 font-extrabold"
             >{{ selectedMotion.threshold }}%</span
           >
@@ -45,21 +45,19 @@
         </p>
 
         <div
-          class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-300 border dark:border-custom-700"
+          class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-950 border dark:border-custom-700"
         >
-          <template v-if="selectedMotion.video_path">
-            <img
-              class="w-full h-full shadow"
-              controls
-              :src="`/Snapshots/${selectedMotion.video_path}`"
-            />
-          </template>
+          <img
+            v-if="selectedMotion.video_path"
+            class="w-[70%] h-auto object-cover"
+            :src="`/Snapshots/${selectedMotion.video_path}`"
+          />
 
           <div
             v-else
-            class="w-auto h-[300px] font-bold text-sm flex justify-center items-center text-red-700"
+            class="w-auto h-[250px] font-bold text-sm flex justify-center items-center text-red-700"
           >
-            No video available.
+            No screenshot available.
           </div>
         </div>
 

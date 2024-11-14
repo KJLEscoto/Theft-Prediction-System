@@ -9,10 +9,9 @@
     <div class="h-auto w-full p-7 flex flex-col gap-3">
       <!-- Header -->
       <section class="flex justify-between items-end">
-        <h1 v-if="user.role == 'client'" class="text-lg font-semibold">
-          Motion Detected
+        <h1 class="text-lg font-semibold text-red-500">
+          POTENTIAL THEFT DETECTED
         </h1>
-        <p v-else class="font-medium text-sm dark:opacity-50">Detected by:</p>
         <UButton
           icon="i-lucide-x"
           @click="closeModal"
@@ -20,23 +19,24 @@
           size="2xs"
         />
       </section>
-      <h1
-        v-if="user.role == 'superadmin' || user.role == 'admin'"
-        class="dark:opacity-70 text-xl font-bold -mt-2"
-      >
-        <span class="truncate capitalize">{{ notification.name }}</span> |
-        {{ notification.username }}
-      </h1>
 
       <hr class="border-custom-300 dark:border-custom-700" />
 
       <!-- Notification Details -->
       <section class="flex flex-col gap-1">
-        <h1 class="font-medium">
+        <!-- <h1 class="font-medium">
           <span class="font-bold capitalize text-red-500"
-            >POTENTIAL THEFT</span
+            >POTENTIAL THEFT DETECTED</span
           >
-        </h1>
+        </h1> -->
+
+        <div v-if="user.role == 'superadmin' || user.role == 'admin'">
+          <p class="font-medium text-sm dark:opacity-50 -mb-1">Detected by:</p>      
+          <h1 class="dark:opacity-70 text-lg font-bold">
+            <span class="truncate capitalize">{{ notification.name }}</span> | {{ notification.username }}
+          </h1>
+        </div>
+
 
         <!-- <p class="text-sm font-medium">
           Description:
@@ -60,11 +60,35 @@
         <div
           class="flex justify-center items-center mt-2 w-full bg-white dark:bg-custom-950 border dark:border-custom-700"
         >
-          <img
-            v-if="notification.screenshot"
-            class="w-auto h-[250px] object-cover"
-            :src="`/Snapshots/${notification.screenshot}`"
-          />
+          <UCarousel 
+            v-if="notification.screenshot" 
+            v-slot="{ item }" 
+            :items="items" 
+            :ui="{ item: 'basis-full' }" 
+            class="overflow-hidden w-full h-auto bg-white dark:bg-custom-950 mx-auto relative"
+            :prev-button="{
+              color: 'gray',
+              icon: 'i-heroicons-arrow-left-20-solid',
+            }"
+            :next-button="{
+              color: 'gray',
+              icon: 'i-heroicons-arrow-right-20-solid',
+            }"
+            arrows>
+            <img :src="item.img" class="w-[70%] h-auto mx-auto" draggable="false">
+            <div class="absolute w-full text-center text-xs font-semibold py-1 px-3 bottom-0">
+              <span class="bg-white dark:bg-custom-950 p-1 px-3 capitalize rounded-t">{{ item.name }} - 
+                <span
+                  v-if="item.threshold <= 74.99"
+                  class="text-green-500 font-extrabold"
+                  >{{ item.threshold }}%</span
+                >
+                <span v-else class="text-red-500 font-extrabold"
+                  >{{ item.threshold }}%</span
+                >
+              </span>
+            </div>
+          </UCarousel>
 
           <div
             v-else
@@ -98,6 +122,24 @@ const props = defineProps({
     required: true,
   },
 });
+
+const items = [
+  {
+    name: 'looking around',
+    img: 'https://picsum.photos/1920/1080?random=1',
+    threshold: '88.00'
+  },
+  {
+    name: 'reaching',
+    img: 'https://picsum.photos/1920/1080?random=2',
+    threshold: '73.97'
+  },
+  {
+    name: 'concealing',
+    img: 'https://picsum.photos/1920/1080?random=3',
+    threshold: '88.00'
+  }
+]
 
 const modal = useModal();
 

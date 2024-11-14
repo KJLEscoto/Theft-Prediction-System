@@ -46,7 +46,7 @@
             color: 'gray',
             icon: 'i-heroicons-arrow-right-20-solid',
           }"
-          class="overflow-hidden w-full h-auto bg-custom-100 dark:bg-custom-900 rounded shadow-md mx-auto"
+          class="overflow-hidden w-full h-auto bg-custom-100 dark:bg-custom-900 rounded shadow-md mx-auto relative"
           indicators
         >
           <img :src="item" class="w-[70%] h-auto mx-auto" draggable="false" />
