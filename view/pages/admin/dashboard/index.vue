@@ -234,7 +234,7 @@ const cards = [
   {
     icon: "i-lucide-triangle-alert",
     total: totalActionsDetected,
-    label: "Detect Count",
+    label: "Potential Theft",
   },
   {
     icon: "i-lucide-users-round",
@@ -254,7 +254,7 @@ const cards = [
   {
     icon: "i-lucide-hand",
     total: totalMotions,
-    label: "Motion Count",
+    label: "Motions Detected",
   },
   {
     icon: "i-lucide-smile",
