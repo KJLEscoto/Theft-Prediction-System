@@ -56,6 +56,7 @@ const onClick = () => {
 const contacts = ref([]);
 
 const fetchContact = async () => {
+  console.log("This is your phone number", user.phone_number);
   try {
     const response = await fetch(
       "http://127.0.0.1:8000/api/user/contact/enabled",
@@ -70,10 +71,22 @@ const fetchContact = async () => {
 
     // Check if data is an array and contains contact information
     if (Array.isArray(data) && data.length) {
-      contacts.value = data.map((contact) => `+63` + contact.contact_number); // Save only contact numbers
+      contacts.value = data.map((contact) => `+63` + contact.contact_number); // Prefix +63 to contact numbers
+
+      // Include user's phone number in the contacts list
+      if (user.phone_number) {
+        const formattedUserPhone = `+63${user.phone_number}`;
+        contacts.value.push(formattedUserPhone);
+      }
+
       console.log("Fetched contacts:", contacts.value);
     } else {
-      console.log("No contacts found.");
+      // If no contacts found, add user's phone number with +63 prefix
+      contacts.value = user.phone_number ? [`+63${user.phone_number}`] : [];
+      console.log(
+        "No contacts found, only user's phone added:",
+        contacts.value
+      );
     }
   } catch (error) {
     console.log("Error fetching contacts:", error);
@@ -187,7 +200,6 @@ onMounted(async () => {
   name.value = "alert_1";
   fetchAvatars();
   await fetchContact();
-  console.log("dara ang contacts", contacts.value);
   try {
     // fetches the latest entry time on mount
     const response = await fetch("http://127.0.0.1:8000/api/notifications", {
