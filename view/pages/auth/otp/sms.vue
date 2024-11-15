@@ -79,7 +79,7 @@
         <template #default="{ error }">
           <UInput
             v-model="state.otp"
-            placeholder="6-digit pin"
+            placeholder="6-digit code"
             type="text"
             color="gray"
             size="md"

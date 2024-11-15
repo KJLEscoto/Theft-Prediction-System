@@ -3,7 +3,7 @@
 
   <div class="h-auto w-full p-5 flex flex-col gap-5">
     <h1 class="text-lg font-semibold text-custom-800 dark:text-white">
-      List of Detected Motions
+      List of Potential Theft
     </h1>
 
     <span v-if="!user.role || !['client', 'admin', 'superadmin'].includes(user.role)">

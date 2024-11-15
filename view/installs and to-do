@@ -11,14 +11,8 @@ NPM - npm install
 / reload pages
 
 --- to do:
-/ api
-/ integrations
-/ phone +63 splice
-/ all nuxt tables
-/ unhashed password (for retrieval)
-/ update client
-/ add, remove, select bulk sms
-/ loading states
+/ train.py = train motion -> choose a training mode
+/ app.py = run the server
 
 --- updates done:
 / responsive
@@ -27,17 +21,10 @@ NPM - npm install
 / show/hide password
 
 - client side
-  / input fields fix error
-  / static avatars (variants)
-  / monitor - static camera selection
-  / settings - edit, static bulk sms 3:max (add, select, remove)
+/ input fields fix error
+/ static avatars (variants)
+/ monitor - static camera selection
+/ settings - edit, static bulk sms 3:max (add, select, remove)
 
 
-
-
-BUHATA NI BAJA:
-
-1. i-latest tanan table (detected, users)
-2. sa client/monitor/index.vue, dapat kung wala pa na run ang server sa python kay mag [const isLive = ref(false)]... Kung na run na ang server kay [isLive.value = true], dapat ma watch or onMounted ni every 3000 msecond para dili na nato need irefresh ang page. Kusa na mag display ang camera or mahimog 'No Camera Available.'
-ps: Gibuhat nako ni gabii pero mag hang ang camera pagdugay idk, so gibalik sa nako sa dati.
 
