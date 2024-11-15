@@ -77,8 +77,8 @@ class MotionFeedApp:
 
 
     def setup_ui(self):
-        self.root.title('Motion Feed GUI')
-        self.root.geometry('600x400')  # Increased window size for better UI display
+        self.root.title('Train GUI')
+        self.root.geometry('600x250')  # Increased window size for better UI display
         ctk.CTkLabel(self.root, text='Motion Feed', font=('Helvetica', 20)).pack(pady=10)
         ctk.CTkLabel(self.root, text='Choose an option you want to add a motion:').pack(pady=10)
         ctk.CTkButton(self.root, text='Via Live', command=self.show_webcam_gui).pack(pady=10)
@@ -93,73 +93,127 @@ class MotionFeedApp:
     def enable_start_training_button(self):
         self.start_training_button.configure(state='normal')
 
+
+    def get_available_cameras(self):
+        """ Dynamically checks for available cameras. """
+        index = 0
+        available_cameras = {}
+        while True:
+            cap = cv2.VideoCapture(index)
+            if not cap.read()[0]:
+                cap.release()
+                break
+            available_cameras[f"Camera {index}"] = str(index)
+            cap.release()
+            index += 1
+        return available_cameras
+
+
+
     def show_webcam_gui(self):
         self.root.withdraw()
         webcam_window = ctk.CTkToplevel(self.root)
         webcam_window.title('Webcam Processing')
-        webcam_window.geometry('600x400')
-        ctk.CTkLabel(webcam_window, text='Class Name:').pack(pady=5)
+        webcam_window.geometry('600x250')
+
+        # Class Name
+        ctk.CTkLabel(webcam_window, text='Class Name:').grid(row=0, column=0, padx=10, pady=5, sticky="w")
         file_name_entry = ctk.CTkEntry(webcam_window, textvariable=self.file_name_var)
-        file_name_entry.pack(pady=5)
+        file_name_entry.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
 
-        # Add input field for selecting camera index (0 by default)
-        ctk.CTkLabel(webcam_window, text='Camera Index:').pack(pady=5)
-        camera_index_entry = ctk.CTkEntry(webcam_window, textvariable=self.camera_index_var)
-        camera_index_entry.pack(pady=5)
+        # Camera Index Dropdown
+        ctk.CTkLabel(webcam_window, text='Camera Index:').grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        available_cameras = self.get_available_cameras()  # Use self to call the method
+        if not available_cameras:
+            available_cameras = {"No Camera Found": "-1"}
+            
+        camera_index_dropdown = ctk.CTkOptionMenu(
+            webcam_window,
+            variable=self.camera_index_var,
+            values=list(available_cameras.values())
+        )
+        camera_index_dropdown.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
 
-        ctk.CTkButton(webcam_window, text='Start Webcam', command=self.start_webcam).pack(pady=20)
+        # Start Webcam Button
+        ctk.CTkButton(webcam_window, text='Start Webcam', command=self.start_webcam).grid(row=2, column=0, columnspan=2, padx=10, pady=20, sticky="ew")
+
+        # Start Training Button
         csv_file = 'gesture.csv'
-        self.start_training_button = ctk.CTkButton(webcam_window, text='Start Training', state='disabled', command=lambda: self.training_handler.start_training('gesture.csv'))
-        self.start_training_button.pack(pady=10)
+        self.start_training_button = ctk.CTkButton(
+            webcam_window,
+            text='Start Training',
+            state='disabled',
+            command=lambda: self.training_handler.start_training(csv_file)
+        )
+        self.start_training_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+
+        # Configure grid weights for responsiveness
+        webcam_window.grid_columnconfigure(0, weight=1)
+        webcam_window.grid_columnconfigure(1, weight=3)
+
         webcam_window.focus_set()
         webcam_window.wait_window()
         self.root.deiconify()
 
+
+
+
     def show_image_feed_gui(self):
         self.root.withdraw()
         image_folder_window = ctk.CTkToplevel(self.root)
-        image_folder_window.title('Image Folder Selection')
-        image_folder_window.geometry('600x400')
-        
-        ctk.CTkLabel(image_folder_window, text='Select Image Directory:').pack(pady=5)
+        image_folder_window.title('Image Feed Selection')
+        image_folder_window.geometry('600x250')
+
+        # Image Directory
+        ctk.CTkLabel(image_folder_window, text='Select Image Directory:').grid(row=0, column=0, padx=10, pady=5, sticky="w")
         folder_path_var = tk.StringVar()
         folder_entry = ctk.CTkEntry(image_folder_window, textvariable=folder_path_var, state='disabled')
-        folder_entry.pack(pady=5)
-        
-        # Show folder path dynamically in the window after selection
-        folder_label = ctk.CTkLabel(image_folder_window, text='Selected Folder Path:')
-        folder_label.pack(pady=5)
-        folder_path_display = ctk.CTkLabel(image_folder_window, textvariable=folder_path_var)
-        folder_path_display.pack(pady=5)
+        folder_entry.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
+        browse_button = ctk.CTkButton(image_folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var))
+        browse_button.grid(row=0, column=2, padx=10, pady=5, sticky="ew")
 
-        # Browse button that updates the folder path in the folder_path_var
-        ctk.CTkButton(image_folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var)).pack(pady=5)
-        
-        ctk.CTkLabel(image_folder_window, text='Class Name:').pack(pady=5)
+        # Class Name
+        ctk.CTkLabel(image_folder_window, text='Class Name:').grid(row=1, column=0, padx=10, pady=5, sticky="w")
         class_name_var = tk.StringVar()
         class_name_entry = ctk.CTkEntry(image_folder_window, textvariable=class_name_var)
-        class_name_entry.pack(pady=5)
-        
-        ctk.CTkButton(image_folder_window, text='Start Processing', command=lambda: self.start_image_processing(folder_path_var.get(), class_name_var.get())).pack(pady=20)
+        class_name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
 
+        # Start Processing Button
+        start_processing_button = ctk.CTkButton(image_folder_window, text='Start Processing', command=lambda: self.start_image_processing(folder_path_var.get(), class_name_var.get()))
+        start_processing_button.grid(row=2, column=0, columnspan=3, padx=10, pady=20, sticky="ew")
+
+        # Start Training Button
         self.start_training_button = ctk.CTkButton(image_folder_window, text='Start Training', state='disabled', command=lambda: self.training_handler.start_training('gesture.csv'))
-        self.start_training_button.pack(pady=10)
-        
+        self.start_training_button.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
+
+        # Configure grid weights for responsiveness
+        image_folder_window.grid_columnconfigure(0, weight=1)
+        image_folder_window.grid_columnconfigure(1, weight=3)
+        image_folder_window.grid_columnconfigure(2, weight=1)
+
         image_folder_window.focus_set()
         image_folder_window.wait_window()
         self.root.deiconify()
 
+
     def start_webcam(self):
         class_name = self.file_name_var.get()
         camera_index = int(self.camera_index_var.get())  # Get the camera index from user input
+
+        # Check if the camera index is valid
+        cap = cv2.VideoCapture(camera_index)
+        if not cap.isOpened():
+            msgbox.showinfo(title='Error', message='Selected camera is not found or unavailable.')
+            return
+        cap.release()
+
         csv_file = 'gesture.csv'
         if class_name:
             self.root.withdraw()
             threading.Thread(target=self.main, args=(class_name, csv_file, camera_index)).start()
-            # self.save_to_database(class_name)  # Save data to database here
         else:
-            msgbox.showinfo(title='Alert', message=f'Please enter a class name before starting')
-            print('Please enter a class name before starting.')
+            msgbox.showinfo(title='Alert', message='Please enter a class name before starting')
+
 
 
     def start_image_processing(self, folder_path, class_name):
@@ -241,38 +295,40 @@ class MotionFeedApp:
     def show_folder_gui(self):
         self.root.withdraw()
         folder_window = ctk.CTkToplevel(self.root)
-        folder_window.title('Folder Selection')
-        folder_window.geometry('600x400')  # Increased size for folder selection window
-        ctk.CTkLabel(folder_window, text='Select Video Directory:').pack(pady=5)
-        
+        folder_window.title('Video Feed Selection')
+        folder_window.geometry('600x250')  # Adjusted for better layout
+
+        # Video Directory
+        ctk.CTkLabel(folder_window, text='Select Video Directory:').grid(row=0, column=0, padx=10, pady=5, sticky="w")
         folder_path_var = tk.StringVar()
         folder_entry = ctk.CTkEntry(folder_window, textvariable=folder_path_var, state='disabled')
-        folder_entry.pack(pady=5)
-        
-        # Show folder path dynamically in the window after selection
-        folder_label = ctk.CTkLabel(folder_window, text='Selected Folder Path:')
-        folder_label.pack(pady=5)
-        folder_path_display = ctk.CTkLabel(folder_window, textvariable=folder_path_var)
-        folder_path_display.pack(pady=5)
+        folder_entry.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
+        browse_button = ctk.CTkButton(folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var))
+        browse_button.grid(row=0, column=2, padx=10, pady=5, sticky="ew")
 
-        ctk.CTkButton(folder_window, text='Browse', command=lambda: self.browse_folder(folder_path_var)).pack(pady=5)
-        
-        ctk.CTkLabel(folder_window, text='Class Name:').pack(pady=5)
+        # Class Name
+        ctk.CTkLabel(folder_window, text='Class Name:').grid(row=1, column=0, padx=10, pady=5, sticky="w")
         class_name_var = tk.StringVar()
         class_name_entry = ctk.CTkEntry(folder_window, textvariable=class_name_var)
-        class_name_entry.pack(pady=5)
-        
-        # Start Processing button (will be dynamically enabled)
-        self.start_processing_button = ctk.CTkButton(folder_window, text='Start Processing', state='normal', command=lambda: self.start_video_processing(folder_path_var.get(), class_name_var.get(), folder_window))
-        self.start_processing_button.pack(pady=5)
+        class_name_entry.grid(row=1, column=1, padx=10, pady=5, sticky="ew")
 
-        # Start Training button (initially disabled)
+        # Start Processing Button
+        start_processing_button = ctk.CTkButton(folder_window, text='Start Processing', command=lambda: self.start_video_processing(folder_path_var.get(), class_name_var.get(), folder_window))
+        start_processing_button.grid(row=2, column=0, columnspan=3, padx=10, pady=20, sticky="ew")
+
+        # Start Training Button
         self.start_training_button = ctk.CTkButton(folder_window, text='Start Training', state='disabled', command=lambda: self.training_handler.start_training('gesture.csv'))
-        self.start_training_button.pack(pady=20)
+        self.start_training_button.grid(row=3, column=0, columnspan=3, padx=10, pady=10, sticky="ew")
+
+        # Configure grid weights for responsiveness
+        folder_window.grid_columnconfigure(0, weight=1)
+        folder_window.grid_columnconfigure(1, weight=3)
+        folder_window.grid_columnconfigure(2, weight=1)
 
         folder_window.focus_set()
         folder_window.wait_window()
         self.root.deiconify()
+
 
 
     def browse_folder(self, folder_path_var):

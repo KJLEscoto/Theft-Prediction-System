@@ -19,7 +19,6 @@ app = Flask(__name__)
 model1 = None
 model2 = None
 detector = None
-
 class BodyLanguageDetector:
     def __init__(self, threshold, model1, model2, snapshot_dir, max_movements=3, buffer_size=50, camera_index=0):
         self.camera_index = camera_index  # Store the camera index
@@ -259,24 +258,30 @@ def start_flask_server():
 
 # Modify the start_server method to pass the snapshot directory
 def start_server():
-    global detector  # Declare the detector variable as global at the start of the method
+    global detector  # Declare the detector variable as global
     
     if model1 is None or model2 is None:
         messagebox.showwarning("Warning", "Please load both models before starting the server.")
         return
     
-    snapshot_dir = detector.snapshot_dir  # Use the dynamic directory, after it's selected
+    snapshot_dir = detector.snapshot_dir if detector else None  # Use the dynamic directory, after it's selected
     if not snapshot_dir:  # Check if a directory is selected
         messagebox.showwarning("Warning", "Please select a snapshot folder first.")
         return
     
-    camera_index = int(camera_index_entry.get())
-    detector = BodyLanguageDetector(0.7, model1, model2, snapshot_dir)  # Initialize detector
+    try:
+        camera_index = camera_options[camera_index_var.get()]  # Get the camera index from the dropdown
+    except ValueError:
+        messagebox.showwarning("Warning", "Invalid camera index. Please enter a valid number.")
+        return
+    
+    detector = BodyLanguageDetector(0.7, model1, model2, snapshot_dir, camera_index=camera_index)  # Pass dynamic camera index
     threading.Thread(target=start_flask_server, daemon=True).start()
     
     # Minimize the GUI window
     root.iconify()
     messagebox.showinfo("Info", "Server started on http://localhost:5000/video_feed")
+
 
 # GUI method to select snapshot directory
 def select_snapshot_directory():
@@ -290,7 +295,7 @@ def select_snapshot_directory():
         
         # Initialize the detector object if it's not already initialized
         if detector is None:
-            camera_index = int(camera_index_entry.get())
+            camera_index = camera_options[camera_index_var.get()]  # Get the camera index from the dropdown
             detector = BodyLanguageDetector(0.7, model1, model2, snapshot_dir)  # Initialize detector
 
         detector.snapshot_dir = snapshot_dir  # Set the new snapshot directory
@@ -321,31 +326,60 @@ def load_gesture_model():
 ctk.set_appearance_mode('Dark')
 ctk.set_default_color_theme('blue')
 
-# GUI layout
 root = ctk.CTk()
-root.title("Body Language Detection")
-root.geometry("400x400")
+root.title("Body Language Detection System")
+root.geometry("500x500")
+root.resizable(False, False)  # Prevent resizing for consistent alignment
 
-# Camera input field
-camera_index_label = ctk.CTkLabel(root, text="Enter Camera Index:")
-camera_index_label.pack(pady=10)
+# Header label
+header_label = ctk.CTkLabel(root, text="Body Language Detection System", font=("Arial", 20, "bold"))
+header_label.pack(pady=20, padx=20, fill="x")
 
-camera_index_entry = ctk.CTkEntry(root)
-camera_index_entry.pack(pady=10)
-camera_index_entry.insert(0, "0")  # Default to 0 if no input
+# Frame for Camera Selection
+camera_frame = ctk.CTkFrame(root)
+camera_frame.pack(pady=10, padx=20, fill="x")
 
-# Buttons
-head_motion_btn = ctk.CTkButton(root, text="Load Head Motion Model", command=load_head_motion_model)
-head_motion_btn.pack(pady=20)
+camera_index_label = ctk.CTkLabel(camera_frame, text="Select Camera:", font=("Arial", 14))
+camera_index_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 
-gesture_motion_btn = ctk.CTkButton(root, text="Load Gesture Model", command=load_gesture_model)
-gesture_motion_btn.pack(pady=20)
+camera_options = {"Camera 0": 0, "Camera 1": 1}  # Add more options if needed
+camera_index_var = ctk.StringVar(value="Camera 0")  # Default selection
 
-# Add a button to select the directory for snapshots
-select_dir_btn = ctk.CTkButton(root, text="Select Snapshot Folder", command=select_snapshot_directory)
-select_dir_btn.pack(pady=10)
+camera_index_dropdown = ctk.CTkOptionMenu(camera_frame, variable=camera_index_var, values=list(camera_options.keys()))
+camera_index_dropdown.grid(row=0, column=1, padx=10, pady=5, sticky="ew")
 
-start_btn = ctk.CTkButton(root, text="Start", command=start_server)
-start_btn.pack(pady=20)
+# Make columns fill equally for camera frame
+camera_frame.columnconfigure(0, weight=1)
+camera_frame.columnconfigure(1, weight=3)
+
+# Frame for model loading
+model_frame = ctk.CTkFrame(root)
+model_frame.pack(pady=10, padx=20, fill="x")
+
+head_motion_btn = ctk.CTkButton(model_frame, text="Load Head Motion Model", command=load_head_motion_model)
+head_motion_btn.grid(row=0, column=0, padx=10, pady=5, sticky="ew", columnspan=2)
+
+gesture_motion_btn = ctk.CTkButton(model_frame, text="Load Gesture Model", command=load_gesture_model)
+gesture_motion_btn.grid(row=1, column=0, padx=10, pady=5, sticky="ew", columnspan=2)
+
+# Frame for snapshot selection
+snapshot_frame = ctk.CTkFrame(root)
+snapshot_frame.pack(pady=10, padx=20, fill="x")
+
+select_dir_btn = ctk.CTkButton(snapshot_frame, text="Select Snapshot Folder", command=select_snapshot_directory)
+select_dir_btn.grid(row=0, column=0, padx=10, pady=10, sticky="ew", columnspan=2)
+
+# Start server button
+start_btn = ctk.CTkButton(root, text="Start Server", command=start_server, font=("Arial", 14, "bold"))
+start_btn.pack(pady=20, padx=20, fill="x")
+
+# Footer message
+footer_label = ctk.CTkLabel(root, text="Server will run at http://127.0.0.1:5000/video_feed", font=("Arial", 12, "italic"))
+footer_label.pack(pady=10, padx=20, fill="x")
+
+# Make sure frames are stretchable
+model_frame.columnconfigure(0, weight=1)
+snapshot_frame.columnconfigure(0, weight=1)
 
 root.mainloop()
+
