@@ -147,7 +147,7 @@ const potential_detected = async () => {
 const showToast = async () => {
   playSound();
   toast.add({
-    title: "Motion Detected!",
+    title: "Potential Theft Detected!",
     click: onClick,
     icon: "i-lucide-triangle-alert",
     ui: {
