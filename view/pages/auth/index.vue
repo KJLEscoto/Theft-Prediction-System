@@ -143,6 +143,7 @@
 <script setup lang="ts">
 import type { FormError, FormErrorEvent, FormSubmitEvent } from '#ui/types';
 import { isPasswordVisible, togglePassword } from '~/assets/js/showPassword';
+import { name, playSound } from "~/assets/js/sound";
 
 const state = reactive({
   errors: [] as string[],
@@ -202,10 +203,39 @@ async function onSubmit(event: FormSubmitEvent<any>) {
       // console.log(response)
       // console.log(params);
 
+      // to be comment
+      const toast = useToast();
+      name.value = "login_1";
+
+      const showToast = () => {
+        playSound();
+
+        toast.add({
+          title: "Login Successfully!",
+          icon: "i-lucide-log-in",
+          timeout: 2000,
+          ui: {
+            background: "dark:bg-green-700 bg-green-300",
+            progress: {
+              background: "dark:bg-white bg-green-700 rounded-full",
+            },
+            ring: "ring-1 ring-green-700 dark:ring-custom-900",
+            default: {
+              closeButton: {
+                color: "white",
+              },
+            },
+            icon: "text-custom-900",
+          },
+        });
+      };
+
       setTimeout(() => {
         load.label.value = 'Login';
         load.bool.value = false;
-        navigateTo('/auth/otp')
+        // navigateTo('/auth/otp')
+        showToast();
+        navigateTo('/client/monitor')
       }, 500)
     }
   } catch (error: any) {    

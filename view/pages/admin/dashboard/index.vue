@@ -32,25 +32,32 @@
           <hr class="border-custom-300 dark:border-custom-500 mx-auto w-full" />
         </div>
 
-        <UCarousel
-          ref="carouselRef"
-          v-slot="{ item }"
-          arrows
-          :items="items"
-          :ui="{ item: 'basis-full' }"
-          :prev-button="{
-            color: 'gray',
-            icon: 'i-heroicons-arrow-left-20-solid',
-          }"
-          :next-button="{
-            color: 'gray',
-            icon: 'i-heroicons-arrow-right-20-solid',
-          }"
-          class="overflow-hidden w-full h-auto bg-custom-100 dark:bg-custom-900 rounded shadow-md mx-auto relative"
-          indicators
-        >
-          <img :src="item" class="w-[70%] h-auto mx-auto" draggable="false" />
-        </UCarousel>
+        <span v-if="totalActionsDetected <= 0">
+          <div class="flex items-center justify-center font-bold">
+            0 Detection
+          </div>
+        </span>
+        <span v-else>
+          <UCarousel
+            ref="carouselRef"
+            v-slot="{ item }"
+            arrows
+            :items="items"
+            :ui="{ item: 'basis-full' }"
+            :prev-button="{
+              color: 'gray',
+              icon: 'i-heroicons-arrow-left-20-solid',
+            }"
+            :next-button="{
+              color: 'gray',
+              icon: 'i-heroicons-arrow-right-20-solid',
+            }"
+            class="overflow-hidden w-full h-auto bg-custom-100 dark:bg-custom-900 rounded shadow-md mx-auto relative"
+            indicators
+          >
+            <img :src="item" class="w-[70%] h-auto mx-auto" draggable="false" />
+          </UCarousel>
+        </span>
       </section>
 
       <section
@@ -67,10 +74,12 @@
             class="flex flex-col h-full overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
           >
             <div v-if="activeUsers.length > 0" class="flex">
-              <div
+              <NuxtLink
+                :to="`/admin/users/${user.username}`"
                 v-for="user in activeUsers"
                 :key="user.id"
-                class="flex flex-col gap-1 items-center cursor-default p-5"
+                class="flex flex-col gap-1 items-center cursor-pointer p-5 border border-custom-100 
+                hover:border-custom-300 dark:border-custom-900 dark:hover:border-custom-500"
               >
                 <div class="relative">
                   <img
@@ -100,7 +109,7 @@
                   class="text-center rounded-full px-2 py-1 bg-custom-700 text-custom-100 dark:text-custom-200 dark:bg-custom-900 dark:border dark:border-custom-500 text-[9px]"
                   :value="user.role"
                 />
-              </div>
+              </NuxtLink>
             </div>
             <div
               v-else
@@ -121,10 +130,12 @@
             class="flex flex-col h-full overflow-x-scroll bg-custom-100 dark:bg-custom-900 rounded"
           >
             <div v-if="inactiveUsers.length > 0" class="flex">
-              <div
+              <NuxtLink
+                :to="`/admin/users/${user.username}`"
                 v-for="user in inactiveUsers"
                 :key="user.id"
-                class="flex flex-col gap-1 items-center cursor-default p-5"
+                class="flex flex-col gap-1 items-center cursor-pointer p-5 border border-custom-100 
+                hover:border-custom-300 dark:border-custom-900 dark:hover:border-custom-500"
               >
                 <div class="relative">
                   <img
@@ -154,7 +165,7 @@
                   class="text-center rounded-full px-2 py-1 bg-custom-700 text-custom-100 dark:text-custom-200 dark:bg-custom-900 dark:border dark:border-custom-500 text-[9px]"
                   :value="user.role"
                 />
-              </div>
+              </NuxtLink>
             </div>
             <div
               v-else
@@ -173,9 +184,10 @@
       <section
         class="w-full h-auto grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5"
       >
-        <section
+        <NuxtLink
+          :to="card.path"
           v-for="card in cards"
-          class="p-5 rounded bg-custom-100 dark:bg-custom-900 h-auto flex sm:gap-x-7 gap-x-10 items-center cursor-default"
+          class="p-5 rounded bg-custom-100 dark:bg-custom-900 h-auto flex sm:gap-x-7 gap-x-10 items-center cursor-pointer border dark:border-custom-900 dark:hover:border-custom-500 hover:border-custom-900"
         >
           <div class="rounded-full p-3 bg-custom-600">
             <UIcon class="w-10 h-10 p-1 text-white" :name="card.icon" />
@@ -186,7 +198,7 @@
             <h1 class="text-2xl font-bold">{{ card.total }}</h1>
             <p class="text-wrap">{{ card.label }}</p>
           </div>
-        </section>
+        </NuxtLink>
       </section>
     </div>
   </div>
@@ -235,41 +247,49 @@ const cards = [
     icon: "i-lucide-triangle-alert",
     total: totalActionsDetected,
     label: "Potential Theft",
+    path: "/admin/detected"
   },
   {
     icon: "i-lucide-users-round",
     total: totalUsers,
     label: "Total Users",
+    path: "/admin/users"
   },
   {
     icon: "i-lucide-user-round-check",
     total: activeCount, // Will be updated after loadUsers runs
     label: "Active Accounts",
+    path: { path: '/admin/users?', query: { q: 'active' } }
   },
   {
     icon: "i-lucide-user-round-x",
     total: inactiveCount, // Will be updated after loadUsers runs
     label: "Inactive Accounts",
+    path: { path: '/admin/users?', query: { q: 'inactive' } }
   },
   {
     icon: "i-lucide-hand",
     total: totalMotions,
     label: "Motions Detected",
+    path: "/admin/motions"
   },
   {
     icon: "i-lucide-smile",
     total: totalAvatars,
     label: "Avatars",
+    path: "/admin/avatars"
   },
   {
     icon: "i-lucide-shield-check",
     total: clients,
     label: "Clients",
+    path: { path: '/admin/users?', query: { q: 'client' } }
   },
   {
     icon: "i-lucide-circle-user-round",
     total: admins,
     label: "Admins",
+    path: { path: '/admin/users?', query: { q: 'admin' } }
   },
 ];
 
