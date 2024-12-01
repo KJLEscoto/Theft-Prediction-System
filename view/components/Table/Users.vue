@@ -165,16 +165,18 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { fetchUsers } from '~/assets/js/users'; // Adjust the path as needed
 import { user } from '~/assets/js/userLogged';
 import { name, playSound } from '~/assets/js/sound';
+import { useRoute } from 'vue-router';
 
 // Fetch the generated user data
 const users = ref([]); // Initialize as an empty array
+const route = useRoute();
 
 // console.log('eto na po ang mga users: ', users);
 
 // Variables for pagination and search
 const currentPage = ref(1);
 const pageCount = ref(20);
-const q = ref('');
+const q = ref(route.query.q || '');
 
 // Table headers
 const tableHeaders = [
@@ -192,11 +194,21 @@ const filteredRows = computed(() => {
     return users.value;
   }
 
-  return users.value.filter((person) => {
-    return Object.values(person).some((value) => {
-      return String(value).toLowerCase().includes(q.value.toLowerCase());
-    });
-  });
+  // Ensure that if 'q' is 'active' or 'inactive', we filter users based on their status
+  if (q.value === 'active') {
+    return users.value.filter(person => person.status === 'active'); // Assuming 'status' is the field
+  }
+
+  if (q.value === 'inactive') {
+    return users.value.filter(person => person.status === 'inactive'); // Assuming 'status' is the field
+  }
+
+  // Fallback to generic filtering if no specific query match
+  return users.value.filter(person => 
+    Object.values(person).some(value => 
+      String(value).toLowerCase().includes(q.value.toLowerCase())
+    )
+  );
 });
 
 // Counting the total number of users
