@@ -4,7 +4,16 @@ pip install -r requirements.txt----
 -----------------------------------
 
 CHANGE DIRECTORY SA APP.PY (LINE 47) CHANGE IT INTO DIRECTORY SAS PUBLIC SA NUXT
-
+CHANGE DB IF NEEDE
 
 
 https://github.com/Donny-GUI/tkinter-to-customtkinter-converter
+
+
+
+python -m venv env
+env\Scripts\activate
+-- once makita natong (env) 
+python app.py
+
+-- if naay module not found ang buhaton ana is `pip install {modulename}`
