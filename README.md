@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-    <img src="https://drive.google.com/uc?export=view&id=1W2QKxaTIvY17qPVfIZuYhuUroqIhTSP7" alt="LOGO" width="600" />
+    <img src="https://drive.google.com/uc?export=view&id=1Lje7LXaRNeDoJjrBVTAxhnagncxGdSu7" alt="LOGO" width="600" />
   <br />
   <br />
 
@@ -81,11 +81,25 @@ Run Project Locally
   > ```
   > Install modules and change the path directory
   > ```bash
-  > pip install 'C:\[path-directory]\requirements.txt'
+  > pip install -r requirements.txt
+  > ```
+  > Create environment
+  > ```bash
+  > python -m venv env
+  > ```
+  > Activate environment
+  > ```bash
+  > env\Scripts\activate
   > ```
   > Load the motions and Start the Server 
   > ```bash
   > python app.py
+  > ```
+  >
+  >
+  > **(optional) If there's a module not found**
+  > ```bash
+  > pip install [module-name]
   > ```
 </details>
 
@@ -167,7 +181,7 @@ Optional:
   <p>Start Monitoring - <a href="http://localhost:3000/" target="_blank">http://localhost:3000/</a></p>
 </div>
 
-![landing-page](https://drive.google.com/uc?export=view&id=17uKbu88C3i3U5fEAU_o6aHezuaVQSuxZ)
+![landing-page](https://drive.google.com/uc?export=view&id=1SossCgjlbunyx4gszde2keMDbcu1QRLG)
 
 <h4>🔑 Login Credentials</h4>
 <p>Use these accounts to access the system. <span style="color: #FF0000;"><strong>NOTE:</strong></span> Each role has unique functionalities.</p>

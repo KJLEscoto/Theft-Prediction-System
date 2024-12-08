@@ -13,7 +13,7 @@ export default defineNuxtConfig({
       ],
       link: [
         {
-          rel: 'shortcut icon', type: 'image/png', href: '/icon.png'
+          rel: 'shortcut icon', type: 'image/png', href: '/cypher-logo-nobg.png'
         }
       ]
     }
